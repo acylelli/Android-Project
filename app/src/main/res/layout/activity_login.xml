@@ -1,0 +1,235 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+<androidx.constraintlayout.widget.Guideline
+    android:id="@+id/guidelineBrandTop"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    app:layout_constraintGuide_percent="0.327" />
+
+    <ImageView
+        android:id="@+id/LogoImage"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toTopOf="@id/tvLoginSlogan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.6"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:srcCompat="@drawable/logojaritime" />
+
+<TextView
+android:id="@+id/tvLoginSlogan"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginTop="8dp"
+android:fontFamily="@font/pretendard"
+android:gravity="center"
+android:text="@string/login_slogan"
+android:textColor="@color/login_text"
+android:textSize="13sp"
+app:layout_constraintBottom_toTopOf="@id/btnKakaoLogin"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintTop_toBottomOf="@id/LogoImage" />
+
+<com.google.android.material.button.MaterialButton
+android:id="@+id/btnKakaoLogin"
+android:layout_width="0dp"
+android:layout_height="@dimen/login_button_height"
+android:layout_marginStart="@dimen/login_horizontal_margin"
+android:layout_marginEnd="@dimen/login_horizontal_margin"
+android:layout_marginBottom="@dimen/login_button_gap"
+android:backgroundTint="@color/kakao_yellow"
+android:fontFamily="@font/pretendard"
+android:insetTop="0dp"
+android:insetBottom="0dp"
+android:letterSpacing="0"
+android:minHeight="0dp"
+android:paddingStart="@dimen/login_button_icon_inset"
+android:paddingEnd="@dimen/login_button_icon_inset"
+android:stateListAnimator="@null"
+android:text="@string/login_kakao"
+android:textAllCaps="false"
+android:textColor="@color/kakao_text"
+android:textSize="14sp"
+android:textStyle="bold"
+app:cornerRadius="@dimen/login_button_radius"
+app:elevation="0dp"
+app:icon="@drawable/ic_kakao"
+app:iconGravity="start"
+app:iconPadding="@dimen/login_button_icon_gap"
+app:iconSize="@dimen/login_button_icon_kakao"
+app:iconTint="@null"
+app:layout_constraintBottom_toTopOf="@id/btnAppleLogin"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintStart_toStartOf="parent" />
+
+<com.google.android.material.button.MaterialButton
+android:id="@+id/btnAppleLogin"
+android:layout_width="0dp"
+android:layout_height="@dimen/login_button_height"
+android:layout_marginStart="@dimen/login_horizontal_margin"
+android:layout_marginEnd="@dimen/login_horizontal_margin"
+android:layout_marginBottom="@dimen/login_section_gap"
+android:backgroundTint="@color/pure_black"
+android:fontFamily="@font/pretendard"
+android:insetTop="0dp"
+android:insetBottom="0dp"
+android:letterSpacing="0"
+android:minHeight="0dp"
+android:paddingStart="@dimen/login_button_icon_inset"
+android:paddingEnd="@dimen/login_button_icon_inset"
+android:stateListAnimator="@null"
+android:text="@string/login_apple"
+android:textAllCaps="false"
+android:textColor="@color/white"
+android:textSize="14sp"
+android:textStyle="bold"
+app:cornerRadius="@dimen/login_button_radius"
+app:elevation="0dp"
+app:icon="@drawable/ic_apple"
+app:iconGravity="start"
+app:iconPadding="@dimen/login_button_icon_gap"
+app:iconSize="@dimen/login_button_icon_apple"
+app:iconTint="@color/white"
+app:layout_constraintBottom_toTopOf="@id/layoutOrDivider"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintStart_toStartOf="parent" />
+
+<LinearLayout
+android:id="@+id/layoutOrDivider"
+android:layout_width="0dp"
+android:layout_height="wrap_content"
+android:layout_marginStart="@dimen/login_horizontal_margin"
+android:layout_marginEnd="@dimen/login_horizontal_margin"
+android:layout_marginBottom="@dimen/login_section_gap"
+android:gravity="center_vertical"
+android:orientation="horizontal"
+app:layout_constraintBottom_toTopOf="@id/layoutSocialLogin"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintStart_toStartOf="parent">
+
+<View
+    android:layout_width="0dp"
+    android:layout_height="0.5dp"
+    android:layout_weight="1"
+    android:background="@color/login_divider_line" />
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:fontFamily="@font/pretendard"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:text="@string/login_or"
+    android:textColor="@color/login_text"
+    android:textSize="12sp" />
+
+<View
+    android:layout_width="0dp"
+    android:layout_height="0.5dp"
+    android:layout_weight="1"
+    android:background="@color/login_divider_line" />
+</LinearLayout>
+
+<LinearLayout
+android:id="@+id/layoutSocialLogin"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginBottom="@dimen/login_section_gap"
+android:gravity="center"
+android:orientation="horizontal"
+app:layout_constraintBottom_toTopOf="@id/layoutFooter"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintStart_toStartOf="parent">
+
+<ImageButton
+    android:id="@+id/btnFacebookLogin"
+    android:layout_width="@dimen/login_social_size"
+    android:layout_height="@dimen/login_social_size"
+    android:background="@drawable/bg_social_facebook"
+    android:contentDescription="@string/login_facebook"
+    android:padding="@dimen/login_social_icon_padding"
+    android:scaleType="fitCenter"
+    android:src="@drawable/ic_facebook"
+    tools:src="@drawable/ic_facebook" />
+
+<ImageButton
+    android:id="@+id/btnGoogleLogin"
+    android:layout_width="@dimen/login_social_size"
+    android:layout_height="@dimen/login_social_size"
+    android:layout_marginStart="@dimen/login_social_gap"
+    android:background="@drawable/bg_social_google"
+    android:contentDescription="@string/login_google"
+    android:scaleType="centerInside"
+    android:src="@drawable/ic_google" />
+</LinearLayout>
+
+<LinearLayout
+android:id="@+id/layoutFooter"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginBottom="@dimen/login_footer_bottom"
+android:gravity="center"
+android:orientation="horizontal"
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintStart_toStartOf="parent">
+
+<TextView
+    android:id="@+id/tvFooterSignup"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:fontFamily="@font/pretendard"
+    android:text="@string/footer_signup"
+    android:textColor="@color/login_text"
+    android:textSize="11sp" />
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:fontFamily="@font/pretendard"
+    android:text="|"
+    android:textColor="@color/login_divider_line"
+    android:textSize="11sp" />
+
+<TextView
+    android:id="@+id/tvFooterLogin"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:fontFamily="@font/pretendard"
+    android:text="@string/footer_login"
+    android:textColor="@color/login_text"
+    android:textSize="11sp" />
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:fontFamily="@font/pretendard"
+    android:text="|"
+    android:textColor="@color/login_divider_line"
+    android:textSize="11sp" />
+
+<TextView
+    android:id="@+id/tvFooterInquiry"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:fontFamily="@font/pretendard"
+    android:text="@string/footer_inquiry"
+    android:textColor="@color/login_text"
+    android:textSize="11sp" />
+</LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
