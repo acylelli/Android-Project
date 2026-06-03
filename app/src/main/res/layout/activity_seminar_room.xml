@@ -74,7 +74,7 @@
                 android:layout_marginEnd="20dp"
                 android:text="@string/legend_available_simple"
                 android:textSize="12sp"
-                android:textColor="#FF4B4B" />
+                android:textColor="#222222" />
 
             <View
                 android:layout_width="18dp"
@@ -244,15 +244,14 @@
         <LinearLayout
             android:id="@+id/btnRegisterWaiting"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="32dp"
             android:background="@drawable/bg_primary_button"
-            android:backgroundTint="#FF4B4B"
+            android:backgroundTint="#00927A"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingVertical="10dp"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground">
@@ -260,18 +259,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/notify_when_free"
+                android:text="@string/register_waiting_place"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="@string/notify_when_free_detail"
-                android:textColor="@color/white"
-                android:textSize="11sp" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

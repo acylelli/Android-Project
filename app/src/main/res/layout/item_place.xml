@@ -17,17 +17,28 @@
     android:paddingTop="16dp"
     android:paddingBottom="16dp">
 
+    <ImageView
+        android:id="@+id/ivFavorite"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="4dp"
+        android:src="@drawable/ic_heart_outline"
+        app:layout_constraintBottom_toBottomOf="@id/tvPlaceName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvPlaceName" />
+
     <TextView
         android:id="@+id/tvPlaceName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:layout_marginEnd="8dp"
         android:fontFamily="@font/pretendard"
         android:textColor="@color/text_primary"
         android:textSize="13sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/tvStatusBadge"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivFavorite"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="한성대학교 학술정보관 - 창의열람실" />
 
@@ -39,7 +50,7 @@
         android:fontFamily="@font/pretendard"
         android:textColor="@color/text_secondary"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvPlaceName"
         app:layout_constraintTop_toBottomOf="@id/tvPlaceName"
         tools:text="도서관" />
 

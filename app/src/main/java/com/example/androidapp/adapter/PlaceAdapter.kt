@@ -52,6 +52,18 @@ class PlaceAdapter(
             binding.tvUsageRate.text = context.getString(R.string.usage_rate_format, place.occupancyPercent)
             binding.progressOccupancy.progress = place.occupancyPercent
 
+            // 즐겨찾기 상태 반영
+            binding.ivFavorite.setImageResource(
+                if (place.isFavorite) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline
+            )
+
+            binding.ivFavorite.setOnClickListener {
+                place.isFavorite = !place.isFavorite
+                binding.ivFavorite.setImageResource(
+                    if (place.isFavorite) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline
+                )
+            }
+
             when (place.occupancy) {
                 OccupancyLevel.FULL -> {
                     binding.tvStatusBadge.text = context.getString(R.string.status_full)
@@ -74,6 +86,11 @@ class PlaceAdapter(
                     binding.progressOccupancy.progressTintList =
                         ColorStateList.valueOf(ContextCompat.getColor(context, R.color.occupancy_available))
                 }
+            }
+
+            // [수정] 세미나실일 경우 상태 배지 텍스트 색상을 검은색으로 변경
+            if (place.isSeminar) {
+                binding.tvStatusBadge.setTextColor(ContextCompat.getColor(context, R.color.pure_black))
             }
 
             bindTags(place.tags)

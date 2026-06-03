@@ -3,6 +3,8 @@ package com.example.androidapp
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var placeAdapter: PlaceAdapter
     private var selectedCategoryIndex = 0
+    private var isShowingFavorites = false
     private val categoryChips = mutableListOf<Chip>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,18 +97,70 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun filterPlaces() {
-        val list = if (selectedCategoryIndex == 0) {
+        var list = if (selectedCategoryIndex == 0) {
             MockData.places
         } else {
             val category = MockData.filterChips[selectedCategoryIndex]
             MockData.places.filter { it.category == category }
         }
+
+        if (isShowingFavorites) {
+            list = list.filter { it.isFavorite }
+        }
+
         placeAdapter.submitList(list)
     }
 
     private fun setupBottomNav() {
+        binding.navHome.setOnClickListener {
+            isShowingFavorites = false
+            updateBottomNavStyles()
+            filterPlaces()
+        }
+
+        binding.navFavorites.setOnClickListener {
+            isShowingFavorites = true
+            updateBottomNavStyles()
+            filterPlaces()
+        }
+
         binding.navAlert.setOnClickListener {
             startActivity(Intent(this, MyWaitingActivity::class.java))
+        }
+
+        // 초기 상태 설정
+        updateBottomNavStyles()
+    }
+
+    private fun updateBottomNavStyles() {
+        val activeColor = ContextCompat.getColor(this, R.color.jari_green)
+        val inactiveColor = ContextCompat.getColor(this, R.color.nav_inactive)
+        
+        val homeIcon = binding.navHome.getChildAt(0) as ImageView
+        val homeText = binding.navHome.getChildAt(1) as TextView
+        val favIcon = binding.navFavorites.getChildAt(0) as ImageView
+        val favText = binding.navFavorites.getChildAt(1) as TextView
+        val alertIcon = binding.navAlert.getChildAt(0) as ImageView
+        val alertText = binding.navAlert.getChildAt(1) as TextView
+        val myIcon = binding.navMy.getChildAt(0) as ImageView
+        val myText = binding.navMy.getChildAt(1) as TextView
+
+        // 알림과 마이는 현재 페이지가 아니므로 항상 비활성 색상 (또는 필요시 확장)
+        alertIcon.imageTintList = ColorStateList.valueOf(inactiveColor)
+        alertText.setTextColor(inactiveColor)
+        myIcon.imageTintList = ColorStateList.valueOf(inactiveColor)
+        myText.setTextColor(inactiveColor)
+
+        if (isShowingFavorites) {
+            homeIcon.imageTintList = ColorStateList.valueOf(inactiveColor)
+            homeText.setTextColor(inactiveColor)
+            favIcon.imageTintList = ColorStateList.valueOf(activeColor)
+            favText.setTextColor(activeColor)
+        } else {
+            homeIcon.imageTintList = ColorStateList.valueOf(activeColor)
+            homeText.setTextColor(activeColor)
+            favIcon.imageTintList = ColorStateList.valueOf(inactiveColor)
+            favText.setTextColor(inactiveColor)
         }
     }
 }

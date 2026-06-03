@@ -43,6 +43,7 @@ data class Place(
     val hours: String = "09:00 - 22:00",
     val fee: String = "무료, 학생증 지참",
     val amenities: List<String> = listOf("콘센트", "WiFi"),
+    var isFavorite: Boolean = false,
 )
 
 data class SeminarRoom(

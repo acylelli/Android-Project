@@ -41,5 +41,6 @@
     <color name="photo_placeholder">#FFD1D5DB</color>
     <color name="count_red">#FFEF4444</color>
     <color name="count_orange">#FFF59E0B</color>
-
+    <color name="seat_orange">#FF9800</color>
+    <color name="seat_yellow">#FFC107</color>
 </resources>

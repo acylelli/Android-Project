@@ -69,17 +69,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/ivFavorite"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="6dp"
+            android:contentDescription="@string/nav_favorites"
+            android:src="@drawable/ic_heart_outline"
+            app:layout_constraintBottom_toBottomOf="@id/tvPlaceName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dragHandle" />
+
         <TextView
             android:id="@+id/tvPlaceName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:layout_marginStart="6dp"
             android:layout_marginEnd="8dp"
             android:textColor="@color/text_primary"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/tvOpenBadge"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivFavorite"
             app:layout_constraintTop_toBottomOf="@id/dragHandle" />
 
         <TextView
@@ -200,13 +213,15 @@
             app:layout_constraintEnd_toStartOf="@id/tvInUseCount"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvRealTimeLabel" />
+            app:layout_constraintTop_toBottomOf="@id/tvRealTimeLabel"
+            tools:text="4" />
 
         <TextView
             android:id="@+id/tvEmptyLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="잔여석"
+            android:textColor="@color/text_secondary"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="@id/tvEmptyCount"
             app:layout_constraintStart_toStartOf="@id/tvEmptyCount"
@@ -218,9 +233,10 @@
             android:layout_height="wrap_content"
             android:textSize="28sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvWaitingCount"
             app:layout_constraintStart_toEndOf="@id/tvEmptyCount"
-            app:layout_constraintTop_toTopOf="@id/tvEmptyCount" />
+            app:layout_constraintTop_toTopOf="@id/tvEmptyCount"
+            tools:text="6" />
 
         <TextView
             android:id="@+id/tvInUseLabel"
@@ -232,6 +248,32 @@
             app:layout_constraintEnd_toEndOf="@id/tvInUseCount"
             app:layout_constraintStart_toStartOf="@id/tvInUseCount"
             app:layout_constraintTop_toBottomOf="@id/tvInUseCount" />
+
+        <TextView
+            android:id="@+id/tvWaitingCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvInUseCount"
+            app:layout_constraintTop_toTopOf="@id/tvEmptyCount"
+            tools:text="2"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvWaitingLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="대기자"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/tvWaitingCount"
+            app:layout_constraintStart_toStartOf="@id/tvWaitingCount"
+            app:layout_constraintTop_toBottomOf="@id/tvWaitingCount"
+            tools:visibility="visible" />
 
         <View
             android:id="@+id/divider"
@@ -320,58 +362,62 @@
                 android:layout_height="52dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_primary_button"
+                android:background="@drawable/bg_outline_green"
                 android:text="@string/select_seminar"
-                android:textColor="@color/white"
+                android:textColor="@color/jari_green"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnRegisterWaitingSeminar"
+                android:id="@+id/btnFindOtherSeminar"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_outline_gray"
-                android:text="@string/register_waiting"
+                app:backgroundTint="@null"
+                android:text="@string/find_other_place"
                 android:textColor="#6B7280"
                 android:textSize="15sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnNotify"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
+        <LinearLayout
+            android:id="@+id/layoutGeneralButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_cancel_button"
-            android:backgroundTint="#FF4B4B"
-            android:drawableStart="@drawable/ic_nav_alert"
-            android:drawablePadding="6dp"
-            android:paddingHorizontal="16dp"
-            android:text="@string/notify_when_free"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:drawableTint="@color/white"
-            app:layout_constraintEnd_toStartOf="@id/btnFindOther"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvAmenitiesLabel" />
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/tvAmenitiesLabel">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnFindOther"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/bg_outline_gray"
-            app:backgroundTint="@null"
-            android:text="@string/find_other_place"
-            android:textColor="#6B7280"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btnNotify"
-            app:layout_constraintTop_toBottomOf="@id/tvAmenitiesLabel" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnNotify"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_cancel_button"
+                android:backgroundTint="#FF4B4B"
+                android:drawableStart="@drawable/ic_nav_alert"
+                android:drawablePadding="6dp"
+                android:paddingHorizontal="16dp"
+                android:text="@string/notify_when_free"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:drawableTint="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnFindOther"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_outline_gray"
+                app:backgroundTint="@null"
+                android:text="@string/find_other_place"
+                android:textColor="#6B7280"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
