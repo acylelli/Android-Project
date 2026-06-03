@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.androidapp.R
 import com.example.androidapp.data.OccupancyLevel
 import com.example.androidapp.data.Place
+import com.example.androidapp.data.PlaceCategory
 import com.example.androidapp.databinding.ItemPlaceBinding
 
 class PlaceAdapter(
@@ -76,6 +77,18 @@ class PlaceAdapter(
             }
 
             bindTags(place.tags)
+
+            // 세미나실, 도서관, 스터디카페만 웨이팅 정보 노출 (카페, 학교 열람실은 선착순이라 제외)
+            val canHaveWaiting = place.isSeminar || 
+                                place.category == PlaceCategory.LIBRARY || 
+                                place.category == PlaceCategory.STUDY_CAFE
+
+            if (canHaveWaiting && place.waiting > 0) {
+                binding.tvWaitingInfo.visibility = android.view.View.VISIBLE
+                binding.tvWaitingInfo.text = context.getString(R.string.waiting_count_format, place.waiting)
+            } else {
+                binding.tvWaitingInfo.visibility = android.view.View.GONE
+            }
 
             binding.root.setOnClickListener { onItemClick(place) }
         }

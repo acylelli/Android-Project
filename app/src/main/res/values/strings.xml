@@ -25,7 +25,8 @@
     <string name="hours_label">운영 시간</string>
     <string name="fee_label">이용 요금</string>
     <string name="amenities_label">편의시설</string>
-    <string name="notify_when_free">자리 비면 알림 받기</string>
+    <string name="notify_when_free">자리나면 알림받기</string>
+    <string name="notify_when_free_detail">자리 생기면 즉시 알려드려요</string>
     <string name="find_other_place">다른 장소 찾기</string>
     <string name="select_seminar">세미나실 선택</string>
     <string name="register_waiting">웨이팅 등록</string>
@@ -37,8 +38,8 @@
     <string name="notification_history">알림 내역</string>
     <string name="cancel_waiting">웨이팅 취소</string>
     <string name="select_room">강의실 선택</string>
-    <string name="date_label">날짜</string>
-    <string name="time_label">시간</string>
+    <string name="date_label">예약 날짜</string>
+    <string name="time_label">예약 시간</string>
     <string name="selection_info">선택 정보</string>
     <string name="toast_login">로그인되었습니다.</string>
     <string name="toast_waiting_registered">웨이팅이 등록되었습니다.</string>
@@ -53,8 +54,9 @@
     <string name="status_remaining">잔여 %1$d석</string>
     <string name="usage_rate_format">사용률 %1$d%%</string>
     <string name="total_seats_format">전체 %1$d석</string>
+    <string name="waiting_count_format">웨이팅 %1$d</string>
     <string name="place_address_format">%1$s · %2$.1fkm</string>
-    <string name="legend_available">이용 가능</string>
+    <string name="legend_available_simple">잔여석</string>
     <string name="legend_selected">선택됨</string>
     <string name="legend_occupied">사용 중</string>
     <string name="legend_unavailable">불가</string>
@@ -63,4 +65,5 @@
     <string name="estimated_minutes_format">약 %1$d분</string>
     <string name="planned_hours_format">%1$d시간</string>
     <string name="distance_format">%1$s · %2$.1fkm</string>
+    <string name="notify_icon_desc">알림 아이콘</string>
 </resources>

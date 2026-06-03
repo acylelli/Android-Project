@@ -1,5 +1,7 @@
 package com.example.androidapp.data
 
+import com.example.androidapp.R
+
 enum class PlaceCategory(val label: String) {
     ALL("전체"),
     READING_ROOM("독서실"),
@@ -32,13 +34,14 @@ data class Place(
     val occupancy: OccupancyLevel,
     val occupancyPercent: Int,
     val totalSeats: Int,
+    val imageResId: Int = R.drawable.hansungstudy,
     val isSeminar: Boolean = false,
     val emptySeats: Int = 0,
     val inUse: Int = 0,
     val waiting: Int = 0,
     val rating: Float = 4.5f,
     val hours: String = "09:00 - 22:00",
-    val fee: String = "시간당 2,000원",
+    val fee: String = "무료, 학생증 지참",
     val amenities: List<String> = listOf("콘센트", "WiFi"),
 )
 

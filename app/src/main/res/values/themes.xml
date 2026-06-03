@@ -8,4 +8,8 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
     <style name="Theme.AndroidApp" parent="Base.Theme.AndroidApp" />
+
+    <style name="RoundedImageView">
+        <item name="cornerSize">12dp</item>
+    </style>
 </resources>

@@ -9,124 +9,269 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="32dp">
+        android:paddingTop="32dp">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_height="56dp">
 
             <ImageButton
                 android:id="@+id/btnBack"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:layout_marginStart="12dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/seminar_title"
-                android:src="@android:drawable/ic_menu_revert"
-                app:tint="@color/text_primary" />
+                android:scaleType="fitCenter"
+                android:padding="12dp"
+                android:src="@drawable/back"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/seminar_title"
+                android:textColor="#222222"
                 android:textSize="17sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/select_room"
-            android:textStyle="bold" />
-
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="24dp"
+            android:background="#F5F5F5" />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvRooms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:nestedScrollingEnabled="false" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:background="@drawable/bg_legend_rect_outline"
+                android:backgroundTint="#D1E9E2" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="20dp"
+                android:text="@string/legend_available_simple"
+                android:textSize="12sp"
+                android:textColor="#FF4B4B" />
+
+            <View
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:background="@drawable/bg_legend_rect_filled"
+                android:backgroundTint="#F3F4F6" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="20dp"
+                android:text="사용중"
+                android:textSize="12sp"
+                android:textColor="#666666" />
+
+            <View
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:background="@drawable/bg_legend_rect_filled"
+                android:backgroundTint="#00927A" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="20dp"
+                android:text="선택됨"
+                android:textSize="12sp"
+                android:textColor="#666666" />
+
+            <View
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:background="@drawable/bg_legend_rect_filled"
+                android:backgroundTint="#222222" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="내 예약"
+                android:textSize="12sp"
+                android:textColor="#666666" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="#F5F5F5" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="16dp"
             android:text="@string/date_label"
+            android:textColor="#222222"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
+            android:clipToPadding="false"
+            android:paddingHorizontal="20dp"
             android:scrollbars="none">
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupDate"
+            <LinearLayout
+                android:id="@+id/layoutDates"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                app:singleSelection="true" />
+                android:orientation="horizontal" />
         </HorizontalScrollView>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="28dp"
             android:text="@string/time_label"
+            android:textColor="#222222"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupTime"
+        <GridLayout
+            android:id="@+id/gridLayoutTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="8dp"
-            app:singleSelection="true" />
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="12dp"
+            android:columnCount="4" />
 
+        <!-- 예약 정보 요약 박스 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bg_rounded_gray"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/bg_summary_box"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="18dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="세미나실"
+                    android:textColor="#666666"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvSummaryRoom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#00927A"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="날짜"
+                    android:textColor="#666666"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvSummaryDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#00927A"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="시간"
+                    android:textColor="#666666"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tvSummaryTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#00927A"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnRegisterWaiting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/bg_primary_button"
+            android:backgroundTint="#FF4B4B"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingVertical="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/selection_info"
-                android:textColor="@color/text_secondary"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/tvSelectedRoom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:textSize="18sp"
+                android:text="@string/notify_when_free"
+                android:textColor="@color/white"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvSelectedDateTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_secondary" />
+                android:layout_marginTop="2dp"
+                android:text="@string/notify_when_free_detail"
+                android:textColor="@color/white"
+                android:textSize="11sp" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btnRegisterWaiting"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bg_primary_button"
-            android:text="@string/register_waiting_place"
-            android:textColor="@color/white" />
     </LinearLayout>
 </ScrollView>

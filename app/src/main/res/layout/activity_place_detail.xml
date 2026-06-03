@@ -133,6 +133,17 @@
             app:layout_constraintTop_toBottomOf="@id/tvPlaceAddress" />
 
         <TextView
+            android:id="@+id/tvStars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:textColor="#FFB800"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@id/tvRating"
+            app:layout_constraintTop_toBottomOf="@id/tvPlaceAddress" />
+
+        <TextView
             android:id="@+id/tvRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -142,17 +153,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvPlaceAddress" />
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/tvPhotoPlaceholder"
             android:layout_width="0dp"
             android:layout_height="160dp"
-            android:layout_marginTop="12dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/hansunglibrary"
+            android:layout_marginTop="28dp"
             android:contentDescription="@string/photo_placeholder"
+            android:scaleType="centerCrop"
+            android:src="@drawable/hansungstudy"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvOpenStatus" />
+            app:layout_constraintTop_toBottomOf="@id/tvOpenStatus"
+            app:shapeAppearanceOverlay="@style/RoundedImageView" />
 
         <TextView
             android:id="@+id/tvRealTimeLabel"
@@ -193,8 +206,7 @@
             android:id="@+id/tvEmptyLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/empty_seats"
-            android:textColor="@color/text_secondary"
+            android:text="잔여석"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="@id/tvEmptyCount"
             app:layout_constraintStart_toStartOf="@id/tvEmptyCount"
@@ -206,7 +218,7 @@
             android:layout_height="wrap_content"
             android:textSize="28sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/tvWaitingCount"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tvEmptyCount"
             app:layout_constraintTop_toTopOf="@id/tvEmptyCount" />
 
@@ -220,27 +232,6 @@
             app:layout_constraintEnd_toEndOf="@id/tvInUseCount"
             app:layout_constraintStart_toStartOf="@id/tvInUseCount"
             app:layout_constraintTop_toBottomOf="@id/tvInUseCount" />
-
-        <TextView
-            android:id="@+id/tvWaitingCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tvInUseCount"
-            app:layout_constraintTop_toTopOf="@id/tvEmptyCount" />
-
-        <TextView
-            android:id="@+id/tvWaitingLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/waiting_count"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="@id/tvWaitingCount"
-            app:layout_constraintStart_toStartOf="@id/tvWaitingCount"
-            app:layout_constraintTop_toBottomOf="@id/tvWaitingCount" />
 
         <View
             android:id="@+id/divider"
@@ -323,49 +314,61 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvAmenitiesLabel">
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSelectSeminar"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="8dp"
+                android:layout_height="52dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_outline_green"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_primary_button"
                 android:text="@string/select_seminar"
-                android:textColor="@color/jari_green" />
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnRegisterWaitingSeminar"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="52dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_primary_button"
+                android:background="@drawable/bg_outline_gray"
                 android:text="@string/register_waiting"
-                android:textColor="@color/white" />
+                android:textColor="#6B7280"
+                android:textSize="15sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnNotify"
             android:layout_width="0dp"
             android:layout_height="52dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/bg_cancel_button"
+            android:backgroundTint="#FF4B4B"
+            android:drawableStart="@drawable/ic_nav_alert"
+            android:drawablePadding="6dp"
+            android:paddingHorizontal="16dp"
             android:text="@string/notify_when_free"
             android:textColor="@color/white"
-            android:textSize="13sp"
+            android:textSize="15sp"
             android:textStyle="bold"
+            app:drawableTint="@color/white"
             app:layout_constraintEnd_toStartOf="@id/btnFindOther"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvAmenitiesLabel" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnFindOther"
             android:layout_width="0dp"
             android:layout_height="52dp"
             android:layout_marginTop="24dp"
-            android:background="@drawable/bg_outline_green"
+            android:background="@drawable/bg_outline_gray"
+            app:backgroundTint="@null"
             android:text="@string/find_other_place"
-            android:textColor="@color/text_secondary"
+            android:textColor="#6B7280"
+            android:textSize="15sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btnNotify"
             app:layout_constraintTop_toBottomOf="@id/tvAmenitiesLabel" />

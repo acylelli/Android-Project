@@ -3,6 +3,7 @@ package com.example.androidapp
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.androidapp.data.MockData
@@ -24,33 +25,33 @@ class PlaceDetailActivity : AppCompatActivity() {
         val place = MockData.placeById(placeId) ?: return finish()
         val isSeminar = intent.getBooleanExtra(AppConstants.EXTRA_IS_SEMINAR, place.isSeminar)
 
-        // [수정] 내리고 올릴 수만 있는 바텀시트 설정
+        // 바텀시트 동작(Behavior) 초기화
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
+        bottomSheetBehavior.isHideable = true        // 완전히 숨기기 활성화
+        bottomSheetBehavior.skipCollapsed = true     // 중간 상태(Collapsed) 건너뛰고 바로 숨겨짐
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED // 처음엔 펼쳐진 상태로 시작
 
-        bottomSheetBehavior.isHideable = false       // 아무리 내려도 완전히 숨겨지지 않음 (창 안 나가짐)
-        bottomSheetBehavior.skipCollapsed = false    // 내렸을 때 바닥에 걸치는 상태(Collapsed)를 사용함
-
-        // 처음 화면이 켜졌을 때 완전히 펼쳐진 상태로 시작하고 싶다면 아래 줄 유지,
-        // 접힌 상태로 시작하고 싶다면 STATE_COLLAPSED로 변경하세요.
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-
-        // [수정] 바텀시트 상태 변화 감지 리스너 (닫기 기능 제거)
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-                        // 완전히 위로 펼쳐졌을 때의 처리
-                    }
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                        // 아래로 내려서 바닥에 걸쳐있을 때의 처리
-                    }
+                    BottomSheetBehavior.STATE_EXPANDED -> { /* 펼쳐졌을 때 처리 */ }
+                    BottomSheetBehavior.STATE_COLLAPSED -> { /* 접혔을 때 처리 */ }
                 }
             }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                // 슬라이드 애니메이션 필요 시 작성
-            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
+
+        // [수정] 뒤로가기 버튼이나 시스템 백버튼을 누르면 바텀시트 상태와 상관없이 바로 종료되도록 수정
+        val onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
 
         // 지도 (현재 주석 처리됨)
 //        binding.mapView.start(
@@ -69,35 +70,33 @@ class PlaceDetailActivity : AppCompatActivity() {
 //            }
 //        )
 
-        binding.btnBack.setOnClickListener { finish() }
+        // UI 데이터 바인딩
         binding.tvPlaceName.text = place.name
         binding.tvPlaceCategory.text = place.category.label
         binding.tvPlaceAddress.text = place.address
         binding.tvOpenStatus.text = "영업중  ${place.hours}"
-        binding.tvRating.text = "${place.rating} (리뷰 128개) ★★★★☆"
+        binding.tvRating.text = "${place.rating} (리뷰 128개) "
+        binding.tvStars.text = "★★★★☆"
         binding.tvEmptyCount.text = place.emptySeats.toString()
         binding.tvInUseCount.text = place.inUse.toString()
-        binding.tvWaitingCount.text = place.waiting.toString()
         binding.tvHours.text = place.hours
         binding.tvFee.text = place.fee
         binding.tvAmenities.text = place.amenities.joinToString(" · ")
+        binding.tvPhotoPlaceholder.setImageResource(place.imageResId)
 
         // 숫자 색상 분기
         when (place.occupancy) {
             OccupancyLevel.FULL -> {
                 binding.tvEmptyCount.setTextColor(ContextCompat.getColor(this, R.color.status_full_text))
                 binding.tvInUseCount.setTextColor(ContextCompat.getColor(this, R.color.text_primary))
-                binding.tvWaitingCount.setTextColor(ContextCompat.getColor(this, R.color.status_busy_text))
             }
             OccupancyLevel.BUSY -> {
                 binding.tvEmptyCount.setTextColor(ContextCompat.getColor(this, R.color.status_busy_text))
                 binding.tvInUseCount.setTextColor(ContextCompat.getColor(this, R.color.text_primary))
-                binding.tvWaitingCount.setTextColor(ContextCompat.getColor(this, R.color.status_busy_text))
             }
             OccupancyLevel.AVAILABLE -> {
-                binding.tvEmptyCount.setTextColor(ContextCompat.getColor(this, R.color.jari_green))
+                binding.tvEmptyCount.setTextColor(ContextCompat.getColor(this, R.color.pure_black))
                 binding.tvInUseCount.setTextColor(ContextCompat.getColor(this, R.color.text_primary))
-                binding.tvWaitingCount.setTextColor(ContextCompat.getColor(this, R.color.status_busy_text))
             }
         }
 

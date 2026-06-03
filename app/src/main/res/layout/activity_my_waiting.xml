@@ -9,30 +9,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="32dp">
+        android:paddingTop="40dp">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_height="56dp">
 
             <ImageButton
                 android:id="@+id/btnBack"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/waiting_title"
-                android:src="@android:drawable/ic_menu_revert"
-                app:tint="@color/text_primary" />
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/back"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/jari_green" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/waiting_title"
+                android:textColor="@color/text_primary"
                 android:textSize="17sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -157,7 +166,7 @@
             android:layout_marginTop="28dp"
             android:orientation="horizontal">
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnFindOther"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
@@ -165,16 +174,18 @@
                 android:layout_weight="1"
                 android:background="@drawable/bg_outline_green"
                 android:text="@string/find_other_place"
-                android:textColor="@color/jari_green" />
+                android:textColor="@color/jari_green"
+                app:backgroundTint="@null" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnCancelWaiting"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_cancel_button"
                 android:text="@string/cancel_waiting"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                app:backgroundTint="@null" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
