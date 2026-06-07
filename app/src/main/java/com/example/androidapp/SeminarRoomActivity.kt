@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.androidapp.adapter.SeminarRoomAdapter
 import com.example.androidapp.data.MockData
+import com.example.androidapp.data.NotificationStore
 import com.example.androidapp.databinding.ActivitySeminarRoomBinding
 
 class SeminarRoomActivity : AppCompatActivity() {
@@ -22,6 +23,7 @@ class SeminarRoomActivity : AppCompatActivity() {
     private lateinit var roomAdapter: SeminarRoomAdapter
 
     private var selectedRoom = 102
+    private var isSeatMode = false
     private var selectedDate = Pair("월", "1")
     private var selectedTime = "11:00"
 
@@ -39,6 +41,7 @@ class SeminarRoomActivity : AppCompatActivity() {
     private val colorInUseFill = Color.parseColor("#F5F5F3")       // 사용중 (배경)
     private val colorInUseText = Color.parseColor("#CCCCCC")       // 사용중 (텍스트)
     private val colorRangeMiddleFill = Color.parseColor("#E6F5F2") // 범위 중간 배경 (연한 녹색)
+    private val colorDisabledText = Color.parseColor("#BDBDBD")    // 선택 불가 텍스트
 
     // 요일 컬러 정의
     private val colorSat = Color.parseColor("#4000FF")             // 토요일
@@ -51,27 +54,54 @@ class SeminarRoomActivity : AppCompatActivity() {
         binding = ActivitySeminarRoomBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        isSeatMode = intent.getBooleanExtra("is_seat_selection", false)
+        if (isSeatMode) {
+            setupSeatModeUI()
+        }
+
         generateJuneCalendar()
 
         binding.btnBack.setOnClickListener { finish() }
 
-        roomAdapter = SeminarRoomAdapter { roomNumber ->
+        roomAdapter = SeminarRoomAdapter(isSeatMode) { roomNumber ->
             selectedRoom = roomNumber
             roomAdapter.updateSelection(roomNumber)
             updateSummary()
         }
 
-        binding.rvRooms.layoutManager = GridLayoutManager(this, 5)
+        val initialSpanCount = if (isSeatMode) 5 else 2
+        binding.rvRooms.layoutManager = GridLayoutManager(this, initialSpanCount)
         binding.rvRooms.adapter = roomAdapter
-        roomAdapter.submitList(MockData.seminarRooms(), selectedRoom)
+        
+        // [수정] 모드에 따라 데이터 분리: 세미나실(101~112호) vs 열람실 좌석(1~50번)
+        val data = if (isSeatMode) MockData.studyRoomSeats() else MockData.seminarRooms()
+        val initialSelected = if (isSeatMode) 1 else 102
+        selectedRoom = initialSelected
+        
+        roomAdapter.submitList(data, selectedRoom)
 
-        setupDateViews()
-        setupTimeViews()
-        updateSummary()
+        if (isSeatMode) {
+            setupSeatModeUI()
+        } else {
+            setupSeminarModeUI()
+            setupDateViews()
+            setupTimeViews()
+            updateSummary()
+        }
 
         binding.btnRegisterWaiting.setOnClickListener {
-            startService(Intent(this, WaitingMonitorService::class.java))
-            startActivity(Intent(this, MyWaitingActivity::class.java))
+            if (isSeatMode) {
+                NotificationStore.saveSeatAlert(this, selectedRoom)
+                startActivity(Intent(this, NotificationActivity::class.java))
+                return@setOnClickListener
+            }
+            NotificationStore.saveReservationAlert(
+                context = this,
+                placeName = "한성대 공대 A동 세미나실",
+                room = "${selectedRoom}호 세미나실",
+                startTime = selectedTime,
+            )
+            startActivity(createReservationIntent())
         }
     }
 
@@ -117,6 +147,7 @@ class SeminarRoomActivity : AppCompatActivity() {
         binding.layoutDates.removeAllViews()
 
         juneDates.forEach { datePair ->
+            val isWeekend = datePair.first == "토" || datePair.first == "일"
             val cellLayout = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
                 gravity = Gravity.CENTER
@@ -143,7 +174,13 @@ class SeminarRoomActivity : AppCompatActivity() {
                     gravity = Gravity.CENTER
                 }
 
-                if (datePair == selectedDate) {
+                if (isWeekend) {
+                    background = createBoxDrawable("IN_USE", 12)
+                    tvWeek.setTextColor(colorDisabledText)
+                    tvDay.setTextColor(colorDisabledText)
+                    isEnabled = false
+                    alpha = 0.9f
+                } else if (datePair == selectedDate) {
                     background = createBoxDrawable("SELECTED", 12)
                     tvWeek.setTextColor(Color.WHITE)
                     tvDay.setTextColor(Color.WHITE)
@@ -151,24 +188,32 @@ class SeminarRoomActivity : AppCompatActivity() {
                     background = createBoxDrawable("AVAILABLE", 12)
                     tvWeek.setTextColor(colorTextSecondary)
 
-                    // [수정] 주말 텍스트 컬러 지정 (토: #4000FF, 일: #F10000)
-                    when (datePair.first) {
-                        "토" -> tvDay.setTextColor(colorSat)
-                        "일" -> tvDay.setTextColor(colorSun)
-                        else -> tvDay.setTextColor(colorTextPrimary)
-                    }
+                    tvDay.setTextColor(colorTextPrimary)
                 }
 
                 addView(tvWeek)
                 addView(tvDay)
 
-                setOnClickListener {
-                    selectedDate = datePair
-                    setupDateViews()
-                    updateSummary()
+                if (!isWeekend) {
+                    setOnClickListener {
+                        selectedDate = datePair
+                        setupDateViews()
+                        updateSummary()
+                    }
                 }
             }
             binding.layoutDates.addView(cellLayout)
+        }
+    }
+
+    private fun createReservationIntent(): Intent {
+        val hour = selectedTime.substringBefore(":").toInt()
+        val endTime = "${String.format("%02d", hour + 2)}:00"
+        return Intent(this, MyReservationActivity::class.java).apply {
+            putExtra(AppConstants.EXTRA_RESERVATION_PLACE, "한성대 공대 A동 세미나실")
+            putExtra(AppConstants.EXTRA_RESERVATION_ROOM, "${selectedRoom}호 세미나실")
+            putExtra(AppConstants.EXTRA_RESERVATION_DATE, "6월 ${selectedDate.second}일 (${selectedDate.first})")
+            putExtra(AppConstants.EXTRA_RESERVATION_TIME, "$selectedTime ~ $endTime")
         }
     }
 
@@ -225,8 +270,75 @@ class SeminarRoomActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupSeminarModeUI() {
+        binding.tvTitle.text = "세미나실 예약"
+        
+        // 세미나실 예약 시 필요한 UI들 다시 보이기
+        binding.tvDateLabel.visibility = android.view.View.VISIBLE
+        binding.hsvDates.visibility = android.view.View.VISIBLE
+        binding.tvTimeLabel.visibility = android.view.View.VISIBLE
+        binding.gridLayoutTime.visibility = android.view.View.VISIBLE
+        binding.layoutSummary.visibility = android.view.View.VISIBLE
+        binding.divider1.visibility = android.view.View.VISIBLE
+        binding.divider2.visibility = android.view.View.VISIBLE
+        binding.layoutLegend.visibility = android.view.View.VISIBLE
+        
+        // SCREEN 표시 숨기기 (세미나실은 필요 없음)
+        binding.layoutScreen.visibility = android.view.View.GONE
+        
+        binding.tvLegendAvailable.text = "잔여"
+        val tvButton = binding.btnRegisterWaiting.getChildAt(0) as? android.widget.TextView
+        tvButton?.text = "예약 신청하기"
+        
+        updateSpanCount()
+    }
+
+    private fun setupSeatModeUI() {
+        binding.tvTitle.text = "좌석 선택"
+        
+        // 날짜, 시간, 요약 영역 및 구분선 완전히 숨기기
+        binding.tvDateLabel.visibility = android.view.View.GONE
+        binding.hsvDates.visibility = android.view.View.GONE
+        binding.tvTimeLabel.visibility = android.view.View.GONE
+        binding.gridLayoutTime.visibility = android.view.View.GONE
+        binding.layoutSummary.visibility = android.view.View.GONE
+        binding.divider1.visibility = android.view.View.GONE
+        binding.divider2.visibility = android.view.View.GONE
+        binding.layoutLegend.visibility = android.view.View.GONE
+        
+        // SCREEN 표시 보이기
+        binding.layoutScreen.visibility = android.view.View.VISIBLE
+
+        // Legend text for seats
+        binding.tvLegendAvailable.text = "공석"
+
+        // 버튼 텍스트 변경
+        val tvButton = binding.btnRegisterWaiting.getChildAt(0) as? android.widget.TextView
+        tvButton?.text = "선택한 자리 알림받기"
+
+        updateSpanCount()
+    }
+
+    private fun updateSpanCount() {
+        val orientation = resources.configuration.orientation
+        val spanCount = if (isSeatMode) {
+            // 열람실 좌석 모드: 세로 5열, 가로 10열 (영화관 스타일)
+            if (orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) 10 else 5
+        } else {
+            // 세미나실 모드: 기본 2열 (가로모드는 4열)
+            if (orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) 4 else 2
+        }
+        binding.rvRooms.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, spanCount)
+    }
+
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        updateSpanCount()
+    }
+
     private fun updateSummary() {
-        binding.tvSummaryRoom.text = "${selectedRoom}호"
+        val suffix = if (isSeatMode) "번" else "호"
+        binding.tvSummaryRoom.text = "${selectedRoom}$suffix"
         binding.tvSummaryDate.text = "6월 ${selectedDate.second}일 (${selectedDate.first})"
 
         val hour = selectedTime.substringBefore(":").toInt()

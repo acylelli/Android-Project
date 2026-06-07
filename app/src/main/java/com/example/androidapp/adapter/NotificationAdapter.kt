@@ -38,6 +38,7 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.Notificatio
         fun bind(event: NotificationEvent) {
             binding.tvNotificationTime.text = event.time
             binding.tvNotificationMessage.text = event.message
+            binding.tvNotificationDetail.text = event.detail
         }
     }
 }

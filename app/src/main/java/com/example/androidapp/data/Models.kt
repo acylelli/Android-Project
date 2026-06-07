@@ -62,4 +62,5 @@ data class WaitingInfo(
 data class NotificationEvent(
     val time: String,
     val message: String,
+    val detail: String,
 )

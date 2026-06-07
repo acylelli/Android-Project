@@ -31,8 +31,8 @@ class PlaceDetailActivity : AppCompatActivity() {
 
         // 바텀시트 동작(Behavior) 초기화
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
-        bottomSheetBehavior.isHideable = true        // 완전히 숨기기 활성화
-        bottomSheetBehavior.skipCollapsed = true     // 중간 상태(Collapsed) 건너뛰고 바로 숨겨짐
+        bottomSheetBehavior.isHideable = false        // 완전히 숨겨지지 않도록 수정
+        bottomSheetBehavior.skipCollapsed = false     // 접힌 상태(Peek) 허용
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED // 처음엔 펼쳐진 상태로 시작
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -55,6 +55,10 @@ class PlaceDetailActivity : AppCompatActivity() {
 
         binding.btnBack.setOnClickListener {
             finish()
+        }
+
+        binding.ivChatbot.setOnClickListener {
+            android.widget.Toast.makeText(this, "AI 헬프봇: 무엇을 도와드릴까요?", android.widget.Toast.LENGTH_SHORT).show()
         }
 
         // 지도 (현재 주석 처리됨)
@@ -87,6 +91,14 @@ class PlaceDetailActivity : AppCompatActivity() {
         binding.tvFee.text = place.fee
         binding.tvAmenities.text = place.amenities.joinToString(" · ")
         binding.tvPhotoPlaceholder.setImageResource(place.imageResId)
+
+        // 즐겨찾기 상태 초기화
+        updateFavoriteIcon(place.isFavorite)
+
+        binding.ivFavorite.setOnClickListener {
+            place.isFavorite = !place.isFavorite
+            updateFavoriteIcon(place.isFavorite)
+        }
 
         // 숫자 색상 분기 (잔여석 수에 따른 색상 변경)
         val emptySeats = place.emptySeats
@@ -140,12 +152,27 @@ class PlaceDetailActivity : AppCompatActivity() {
             binding.layoutGeneralButtons.visibility = View.VISIBLE
             
             // 버튼 스타일 유지 (빨간색 "자리나면 알림받기")
-            binding.btnNotify.text = getString(R.string.notify_when_free)
+            binding.btnNotify.text = if (place.category == PlaceCategory.STUDY_CAFE) {
+                "좌석 선택하기"
+            } else {
+                getString(R.string.notify_when_free)
+            }
             binding.btnNotify.setBackgroundResource(R.drawable.bg_cancel_button)
             binding.btnNotify.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FF4B4B"))
             binding.btnNotify.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_nav_alert, 0, 0, 0)
             
-            binding.btnNotify.setOnClickListener { openWaitingScreen() }
+            binding.btnNotify.setOnClickListener { 
+                if (place.name.contains("한성대학교 학술정보관")) {
+                    val intent = Intent(this, StudyRoomActivity::class.java).apply {
+                        putExtra(AppConstants.EXTRA_PLACE_ID, place.id)
+                    }
+                    startActivity(intent)
+                } else if (place.category == PlaceCategory.STUDY_CAFE) {
+                    startActivity(Intent(this, StudyCafeSeatActivity::class.java))
+                } else {
+                    openWaitingScreen()
+                }
+            }
             binding.btnFindOther.setOnClickListener { finish() }
         }
     }
@@ -153,5 +180,18 @@ class PlaceDetailActivity : AppCompatActivity() {
     private fun openWaitingScreen() {
         startService(Intent(this, WaitingMonitorService::class.java))
         startActivity(Intent(this, MyWaitingActivity::class.java))
+    }
+
+    private fun updateFavoriteIcon(isFavorite: Boolean) {
+        val iconRes = if (isFavorite) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline
+        binding.ivFavorite.setImageResource(iconRes)
+        
+        // 색상 적용 (채워진 경우 빨간색, 아닌 경우 회색)
+        val tintColor = if (isFavorite) {
+            ContextCompat.getColor(this, R.color.status_full_text)
+        } else {
+            ContextCompat.getColor(this, R.color.nav_inactive)
+        }
+        binding.ivFavorite.imageTintList = ColorStateList.valueOf(tintColor)
     }
 }

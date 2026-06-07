@@ -19,19 +19,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logojaritime" />
 
-    <!-- 우측 상단 프로필 아이콘 -->
-    <ImageView
-        android:id="@+id/ivProfile"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginEnd="20dp"
-        android:contentDescription="@string/nav_my"
-        android:src="@drawable/userlogo"
-        app:layout_constraintBottom_toBottomOf="@id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/imageView" />
+    <!-- 우측 상단 AI 챗봇 아이콘 -->
 
     <!-- 검색창 -->
+
+    <ImageView
+        android:id="@+id/ivChatbot"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="36dp"
+        android:contentDescription="AI 챗봇"
+        android:src="@drawable/ic_chatbot"
+        app:layout_constraintBottom_toBottomOf="@id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/imageView"
+        app:layout_constraintVertical_bias="0.0"
+        app:tint="@color/jari_green_dark" />
+
     <FrameLayout
         android:id="@+id/layoutSearch"
         android:layout_width="0dp"
@@ -214,11 +218,30 @@
                 android:textSize="10sp" />
         </LinearLayout>
 
-        <!-- FAB 자리 비우기 -->
-        <Space
+        <LinearLayout
+            android:id="@+id/navMap"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingVertical="6dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_map_navigation"
+                app:tint="@color/nav_inactive" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/pretendard"
+                android:text="지도"
+                android:textColor="@color/nav_inactive"
+                android:textSize="10sp" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/navAlert"
@@ -270,20 +293,5 @@
                 android:textSize="10sp" />
         </LinearLayout>
     </LinearLayout>
-
-    <!-- 가운데 + 버튼 (FAB) -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAdd"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:contentDescription="@string/app_name"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/jari_green"
-        app:layout_constraintBottom_toBottomOf="@id/layoutBottomNav"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/layoutBottomNav"
-        app:maxImageSize="28dp"
-        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

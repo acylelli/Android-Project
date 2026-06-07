@@ -39,8 +39,15 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerView()
         setupCategoryChips()
         setupBottomNav()
+        setupChatbot()
 
         filterPlaces()
+    }
+
+    private fun setupChatbot() {
+        binding.ivChatbot.setOnClickListener {
+            android.widget.Toast.makeText(this, "AI 헬프봇: 무엇을 도와드릴까요?", android.widget.Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -124,8 +131,16 @@ class MainActivity : AppCompatActivity() {
             filterPlaces()
         }
 
+        binding.navMap.setOnClickListener {
+            startActivity(Intent(this, MapActivity::class.java))
+        }
+
         binding.navAlert.setOnClickListener {
-            startActivity(Intent(this, MyWaitingActivity::class.java))
+            startActivity(Intent(this, NotificationActivity::class.java))
+        }
+
+        binding.navMy.setOnClickListener {
+            startActivity(Intent(this, MyPageActivity::class.java))
         }
 
         // 초기 상태 설정

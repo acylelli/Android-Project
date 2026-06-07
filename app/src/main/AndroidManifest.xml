@@ -29,15 +29,41 @@
             android:exported="false" />
 
         <activity
+            android:name=".MapActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MyPageActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".PlaceDetailActivity"
             android:exported="false" />
 
         <activity
             android:name=".SeminarRoomActivity"
+            android:configChanges="orientation|screenSize|screenLayout"
+            android:exported="false" />
+
+        <activity
+            android:name=".StudyRoomActivity"
+            android:configChanges="orientation|screenSize|screenLayout"
+            android:exported="false" />
+
+        <activity
+            android:name=".StudyCafeSeatActivity"
             android:exported="false" />
 
         <activity
             android:name=".MyWaitingActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MyReservationActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".NotificationActivity"
             android:exported="false" />
 
         <service

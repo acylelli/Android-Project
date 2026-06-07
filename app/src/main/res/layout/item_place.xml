@@ -19,9 +19,10 @@
 
     <ImageView
         android:id="@+id/ivFavorite"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="4dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="-6dp"
+        android:padding="7dp"
         android:src="@drawable/ic_heart_outline"
         app:layout_constraintBottom_toBottomOf="@id/tvPlaceName"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +36,7 @@
         android:layout_marginEnd="8dp"
         android:fontFamily="@font/pretendard"
         android:textColor="@color/text_primary"
-        android:textSize="13sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/tvStatusBadge"
         app:layout_constraintStart_toEndOf="@id/ivFavorite"
@@ -69,19 +70,26 @@
         tools:text="잔여 3석"
         tools:textColor="@color/status_busy_text" />
 
+    <ImageView
+        android:id="@+id/ivLocationPin"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:src="@drawable/ic_location_pin"
+        app:layout_constraintBottom_toBottomOf="@id/tvPlaceAddress"
+        app:layout_constraintEnd_toEndOf="@id/ivFavorite"
+        app:layout_constraintStart_toStartOf="@id/ivFavorite"
+        app:layout_constraintTop_toTopOf="@id/tvPlaceAddress" />
+
     <TextView
         android:id="@+id/tvPlaceAddress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:drawablePadding="4dp"
         android:fontFamily="@font/pretendard"
-        android:gravity="center_vertical"
         android:textColor="@color/text_secondary"
         android:textSize="12sp"
-        app:drawableStartCompat="@drawable/ic_location_pin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvPlaceName"
         app:layout_constraintTop_toBottomOf="@id/tvPlaceCategory"
         tools:text="서울 성북구 · 1.1km" />
 

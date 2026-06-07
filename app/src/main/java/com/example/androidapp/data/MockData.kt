@@ -24,13 +24,13 @@ object MockData {
         ),
         Place(
             id = "2",
-            name = "성북 스터디카페 프리미엄",
+            name = "랭스터디카페 성신여대점",
             category = PlaceCategory.STUDY_CAFE,
-            address = "서울 성북구 보문로 34길",
-            distanceKm = 0.8,
-            tags = listOf("WiFi", "음료"),
+            address = "서울 성북구 동소문로20길 37-6 2층, 3층",
+            distanceKm = 1.0,
+            tags = listOf("WiFi", "음료", "프라이빗존"),
             occupancy = OccupancyLevel.AVAILABLE,
-            occupancyPercent = 60,
+            occupancyPercent = 90,
             totalSeats = 40,
             emptySeats = 4,
             inUse = 36,
@@ -38,7 +38,7 @@ object MockData {
             imageResId = R.drawable.hansungstudy,
             hours = "00:00 - 24:00",
             fee = "2,000원 / 시간",
-            amenities = listOf("무료커피", "개인사물함", "WiFi")
+            amenities = listOf("무료커피", "개인사물함", "WiFi", "콘센트")
         ),
         Place(
             id = "3",
@@ -104,14 +104,20 @@ object MockData {
         "13:00", "14:00", "15:00", "16:00",
     )
 
-    fun seminarRooms(): List<SeminarRoom> = (101..110).map { num ->
+    // 기존 세미나실 데이터 복구 (101~112호)
+    fun seminarRooms(): List<SeminarRoom> = (101..112).map { num ->
         val status = when (num) {
-            101, 103, 105, 108 -> RoomStatus.AVAILABLE
-            104, 106, 107, 109 -> RoomStatus.OCCUPIED
-            110 -> RoomStatus.UNAVAILABLE // 내 예약 (검정색)
-            102 -> RoomStatus.AVAILABLE   // Activity에서 선택될 방
+            101, 103, 105, 108, 111, 112 -> RoomStatus.AVAILABLE
+            104, 106, 107, 109, 110 -> RoomStatus.OCCUPIED
             else -> RoomStatus.AVAILABLE
         }
+        SeminarRoom(num, status)
+    }
+
+    // 학술정보관 전용 좌석 데이터 (1~50번)
+    fun studyRoomSeats(): List<SeminarRoom> = (1..50).map { num ->
+        val availableSeats = setOf(1, 24, 43)
+        val status = if (num in availableSeats) RoomStatus.AVAILABLE else RoomStatus.OCCUPIED
         SeminarRoom(num, status)
     }
 
@@ -126,8 +132,8 @@ object MockData {
     )
 
     val notificationHistory = listOf(
-        NotificationEvent("14:20", "대기 신청이 완료되었습니다."),
-        NotificationEvent("14:35", "앞에 5명 남았습니다."),
-        NotificationEvent("14:50", "앞에 3명 남았습니다. 준비해 주세요."),
+        NotificationEvent("14:20", "대기 신청이 완료되었습니다.", "자리가 나면 알려드려요."),
+        NotificationEvent("14:35", "앞에 5명 남았습니다.", "조금만 더 기다려 주세요."),
+        NotificationEvent("14:50", "앞에 3명 남았습니다. 준비해 주세요.", "입장 가능 알림을 놓치지 마세요."),
     )
 }
