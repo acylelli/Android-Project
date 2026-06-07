@@ -99,9 +99,9 @@ class PlaceAdapter(
                 }
             }
 
-            // [수정] 세미나실일 경우 상태 배지 텍스트 색상을 검은색으로 변경
+
             if (place.isSeminar) {
-                binding.tvStatusBadge.setTextColor(ContextCompat.getColor(context, R.color.pure_black))
+                binding.tvStatusBadge.setTextColor(ContextCompat.getColor(context, R.color.status_available_text))
             }
 
             bindTags(place.tags)

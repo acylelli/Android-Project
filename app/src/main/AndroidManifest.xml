@@ -51,15 +51,16 @@
             android:exported="false" />
 
         <activity
+            android:name=".LibrarySeatActivity"
+            android:configChanges="orientation|screenSize|screenLayout"
+            android:exported="false" />
+
+        <activity
             android:name=".StudyCafeSeatActivity"
             android:exported="false" />
 
         <activity
             android:name=".MyWaitingActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".MyReservationActivity"
             android:exported="false" />
 
         <activity

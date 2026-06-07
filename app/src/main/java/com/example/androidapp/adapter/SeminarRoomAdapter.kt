@@ -16,6 +16,7 @@ class SeminarRoomAdapter(
 
     private var rooms: List<SeminarRoom?> = emptyList()
     private var selectedRoom: Int = 102
+    private var reservedRoom: Int? = null
 
     fun submitList(list: List<SeminarRoom>, selected: Int) {
         rooms = if (isSeatMode) buildStudyRoomSeatLayout(list) else buildSeminarRoomLayout(list)
@@ -25,6 +26,14 @@ class SeminarRoomAdapter(
 
     fun updateSelection(roomNumber: Int) {
         selectedRoom = roomNumber
+        notifyDataSetChanged()
+    }
+
+    fun updateReservation(roomNumber: Int?) {
+        reservedRoom = roomNumber
+        if (roomNumber != null) {
+            selectedRoom = roomNumber
+        }
         notifyDataSetChanged()
     }
 
@@ -82,6 +91,12 @@ class SeminarRoomAdapter(
                 cornerRadius = cornerRadiusDp * density
 
                 when {
+                    room.number == reservedRoom -> {
+                        setColor(colorMyReservation)
+                        setStroke((1 * density).toInt(), colorMyReservation)
+                        binding.tvRoomNumber.setTextColor(android.graphics.Color.WHITE)
+                    }
+
                     room.number == selectedRoom -> {
                         setColor(colorTealMain)
                         setStroke((1 * density).toInt(), colorTealMain)
@@ -116,7 +131,7 @@ class SeminarRoomAdapter(
 
             binding.tvRoomNumber.background = drawable
             binding.root.setOnClickListener {
-                if (isSeatMode || room.status == RoomStatus.AVAILABLE) {
+                if (room.number != reservedRoom && (isSeatMode || room.status == RoomStatus.AVAILABLE)) {
                     onRoomClick(room.number)
                 }
             }

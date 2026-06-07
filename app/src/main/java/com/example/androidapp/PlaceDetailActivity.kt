@@ -180,7 +180,13 @@ class PlaceDetailActivity : AppCompatActivity() {
     }
 
     private fun openSeatSelection(placeId: String) {
-        val intent = Intent(this, StudyRoomActivity::class.java).apply {
+        val place = MockData.placeById(placeId)
+        val targetActivity = when (place?.category) {
+            PlaceCategory.STUDY_CAFE -> StudyCafeSeatActivity::class.java
+            PlaceCategory.LIBRARY -> LibrarySeatActivity::class.java
+            else -> StudyRoomActivity::class.java
+        }
+        val intent = Intent(this, targetActivity).apply {
             putExtra(AppConstants.EXTRA_PLACE_ID, placeId)
         }
         startActivity(intent)

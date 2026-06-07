@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:fillViewport="true">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,7 +32,7 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="스터디카페 좌석"
+                android:text="좌석 선택"
                 android:textColor="#222222"
                 android:textSize="17sp"
                 android:textStyle="bold"
@@ -74,21 +73,20 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <HorizontalScrollView
-            android:id="@+id/hsvSeatMap"
+        <View
+            android:layout_width="220dp"
+            android:layout_height="3dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="18dp"
+            android:background="#E5E5E5" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSeats"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:clipToPadding="false"
-            android:paddingHorizontal="16dp"
-            android:scrollbars="horizontal">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvSeats"
-                android:layout_width="1116dp"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
-        </HorizontalScrollView>
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="12dp"
+            android:nestedScrollingEnabled="false" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -108,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="14dp"
-                android:text="예약 가능"
+                android:text="공석"
                 android:textColor="#222222"
                 android:textSize="11sp" />
 
@@ -161,7 +159,7 @@
                 android:id="@+id/tvRegisterText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="선택한 좌석 예약하기"
+                android:text="선택한 자리 알림받기"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />

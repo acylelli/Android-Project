@@ -2,11 +2,14 @@ package com.example.androidapp
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,6 +19,7 @@ import com.example.androidapp.adapter.SeminarRoomAdapter
 import com.example.androidapp.data.MockData
 import com.example.androidapp.data.NotificationStore
 import com.example.androidapp.databinding.ActivitySeminarRoomBinding
+import com.example.androidapp.databinding.DialogSeminarReservationBinding
 
 class SeminarRoomActivity : AppCompatActivity() {
 
@@ -26,6 +30,7 @@ class SeminarRoomActivity : AppCompatActivity() {
     private var isSeatMode = false
     private var selectedDate = Pair("월", "1")
     private var selectedTime = "11:00"
+    private var reservedRoom: Int? = null
 
     private val juneDates = ArrayList<Pair<String, String>>()
     private val weekdays = listOf("월", "화", "수", "목", "금", "토", "일")
@@ -95,13 +100,11 @@ class SeminarRoomActivity : AppCompatActivity() {
                 startActivity(Intent(this, NotificationActivity::class.java))
                 return@setOnClickListener
             }
-            NotificationStore.saveReservationAlert(
-                context = this,
-                placeName = "한성대 공대 A동 세미나실",
-                room = "${selectedRoom}호 세미나실",
-                startTime = selectedTime,
-            )
-            startActivity(createReservationIntent())
+            if (reservedRoom != null) {
+                exitReservedRoom()
+            } else {
+                showSeminarReservationDialog()
+            }
         }
     }
 
@@ -217,6 +220,60 @@ class SeminarRoomActivity : AppCompatActivity() {
         }
     }
 
+    private fun showSeminarReservationDialog() {
+        val hour = selectedTime.substringBefore(":").toInt()
+        val endTime = "${String.format("%02d", hour + 2)}:00"
+        val dialogBinding = DialogSeminarReservationBinding.inflate(layoutInflater)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogBinding.root)
+            .create()
+
+        dialogBinding.tvReservationRoom.text = "${selectedRoom}호 세미나실"
+        dialogBinding.tvReservationSchedule.text = "6월 ${selectedDate.second}일 (${selectedDate.first}) · $selectedTime ~ $endTime"
+        dialogBinding.btnReservationCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialogBinding.btnReservationConfirm.setOnClickListener {
+            if (!dialogBinding.cbStudentId.isChecked || !dialogBinding.cbTerms.isChecked) {
+                Toast.makeText(this, "학생증 인증과 약관 동의가 필요합니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            reservedRoom = selectedRoom
+            roomAdapter.updateReservation(selectedRoom)
+            NotificationStore.saveReservationAlert(
+                context = this,
+                placeName = "한성대 공대 A동 세미나실",
+                room = "${selectedRoom}호 세미나실",
+                startTime = "$selectedTime ~ $endTime",
+            )
+            updateReservationButton()
+            updateSummary()
+            dialog.dismiss()
+            Toast.makeText(this, "세미나실 예약이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+        }
+        dialog.setOnShowListener {
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
+        dialog.show()
+    }
+
+    private fun exitReservedRoom() {
+        val room = reservedRoom ?: return
+        reservedRoom = null
+        roomAdapter.updateReservation(null)
+        updateReservationButton()
+        Toast.makeText(this, "${room}호 세미나실 퇴실이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun updateReservationButton() {
+        val tvButton = binding.btnRegisterWaiting.getChildAt(0) as? TextView
+        tvButton?.text = if (reservedRoom == null) "예약 신청하기" else "퇴실하기"
+        binding.btnRegisterWaiting.backgroundTintList = android.content.res.ColorStateList.valueOf(
+            if (reservedRoom == null) colorSelectedTheme else Color.parseColor("#222222")
+        )
+    }
+
     private fun setupTimeViews() {
         binding.gridLayoutTime.removeAllViews()
 
@@ -287,8 +344,7 @@ class SeminarRoomActivity : AppCompatActivity() {
         binding.layoutScreen.visibility = android.view.View.GONE
         
         binding.tvLegendAvailable.text = "잔여"
-        val tvButton = binding.btnRegisterWaiting.getChildAt(0) as? android.widget.TextView
-        tvButton?.text = "예약 신청하기"
+        updateReservationButton()
         
         updateSpanCount()
     }
