@@ -51,6 +51,19 @@ data class SeminarRoom(
     val status: RoomStatus,
 )
 
+enum class StudyCafeZone(val label: String) {
+    STUDY_ROOM("스터디룸"),
+    SOLO("1인석"),
+    COUNTER("카운터석"),
+}
+
+data class StudyCafeSeat(
+    val number: Int,
+    val zone: StudyCafeZone,
+    val status: RoomStatus,
+    var remainingSeconds: Long = 0L,
+)
+
 data class WaitingInfo(
     val placeName: String,
     val roomLabel: String,

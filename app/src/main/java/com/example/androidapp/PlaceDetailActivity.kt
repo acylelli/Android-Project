@@ -151,24 +151,26 @@ class PlaceDetailActivity : AppCompatActivity() {
             binding.layoutSeminarButtons.visibility = View.GONE
             binding.layoutGeneralButtons.visibility = View.VISIBLE
             
-            // 버튼 스타일 유지 (빨간색 "자리나면 알림받기")
-            binding.btnNotify.text = if (place.category == PlaceCategory.STUDY_CAFE) {
-                "좌석 선택하기"
-            } else {
-                getString(R.string.notify_when_free)
-            }
+            val hasEmptySeats = place.emptySeats > 0
+            binding.btnNotify.text = if (hasEmptySeats) "좌석 보기" else getString(R.string.notify_when_free)
             binding.btnNotify.setBackgroundResource(R.drawable.bg_cancel_button)
-            binding.btnNotify.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FF4B4B"))
-            binding.btnNotify.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_nav_alert, 0, 0, 0)
+            binding.btnNotify.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    this,
+                    if (hasEmptySeats) R.color.jari_green else R.color.cancel_red,
+                ),
+            )
+            binding.btnNotify.setCompoundDrawablesWithIntrinsicBounds(
+                if (hasEmptySeats) 0 else R.drawable.ic_nav_alert,
+                0,
+                0,
+                0,
+            )
+            binding.btnNotify.compoundDrawablePadding = if (hasEmptySeats) 0 else dpToPx(6)
             
             binding.btnNotify.setOnClickListener { 
-                if (place.name.contains("한성대학교 학술정보관")) {
-                    val intent = Intent(this, StudyRoomActivity::class.java).apply {
-                        putExtra(AppConstants.EXTRA_PLACE_ID, place.id)
-                    }
-                    startActivity(intent)
-                } else if (place.category == PlaceCategory.STUDY_CAFE) {
-                    startActivity(Intent(this, StudyCafeSeatActivity::class.java))
+                if (hasEmptySeats) {
+                    openSeatSelection(place.id)
                 } else {
                     openWaitingScreen()
                 }
@@ -177,9 +179,20 @@ class PlaceDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun openSeatSelection(placeId: String) {
+        val intent = Intent(this, StudyRoomActivity::class.java).apply {
+            putExtra(AppConstants.EXTRA_PLACE_ID, placeId)
+        }
+        startActivity(intent)
+    }
+
     private fun openWaitingScreen() {
         startService(Intent(this, WaitingMonitorService::class.java))
         startActivity(Intent(this, MyWaitingActivity::class.java))
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        return (dp * resources.displayMetrics.density).toInt()
     }
 
     private fun updateFavoriteIcon(isFavorite: Boolean) {

@@ -69,7 +69,7 @@ class SeminarRoomActivity : AppCompatActivity() {
             updateSummary()
         }
 
-        val initialSpanCount = if (isSeatMode) 5 else 2
+        val initialSpanCount = if (isSeatMode) 5 else 3
         binding.rvRooms.layoutManager = GridLayoutManager(this, initialSpanCount)
         binding.rvRooms.adapter = roomAdapter
         
@@ -209,7 +209,7 @@ class SeminarRoomActivity : AppCompatActivity() {
     private fun createReservationIntent(): Intent {
         val hour = selectedTime.substringBefore(":").toInt()
         val endTime = "${String.format("%02d", hour + 2)}:00"
-        return Intent(this, MyReservationActivity::class.java).apply {
+        return Intent(this, NotificationActivity::class.java).apply {
             putExtra(AppConstants.EXTRA_RESERVATION_PLACE, "한성대 공대 A동 세미나실")
             putExtra(AppConstants.EXTRA_RESERVATION_ROOM, "${selectedRoom}호 세미나실")
             putExtra(AppConstants.EXTRA_RESERVATION_DATE, "6월 ${selectedDate.second}일 (${selectedDate.first})")
@@ -326,7 +326,7 @@ class SeminarRoomActivity : AppCompatActivity() {
             if (orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) 10 else 5
         } else {
             // 세미나실 모드: 기본 2열 (가로모드는 4열)
-            if (orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) 4 else 2
+            3
         }
         binding.rvRooms.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, spanCount)
     }

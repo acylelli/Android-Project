@@ -29,13 +29,13 @@ object MockData {
             address = "서울 성북구 동소문로20길 37-6 2층, 3층",
             distanceKm = 1.0,
             tags = listOf("WiFi", "음료", "프라이빗존"),
-            occupancy = OccupancyLevel.AVAILABLE,
+            occupancy = OccupancyLevel.BUSY,
             occupancyPercent = 90,
             totalSeats = 40,
             emptySeats = 4,
             inUse = 36,
             rating = 4.5f,
-            imageResId = R.drawable.hansungstudy,
+            imageResId = R.drawable.studycafe,
             hours = "00:00 - 24:00",
             fee = "2,000원 / 시간",
             amenities = listOf("무료커피", "개인사물함", "WiFi", "콘센트")
@@ -119,6 +119,42 @@ object MockData {
         val availableSeats = setOf(1, 24, 43)
         val status = if (num in availableSeats) RoomStatus.AVAILABLE else RoomStatus.OCCUPIED
         SeminarRoom(num, status)
+    }
+
+    fun studyCafeSeatLayout(): List<StudyCafeSeat?> {
+        val availableSeats = setOf(7, 18, 31, 37)
+        val seatByNumber = (1..40).associateWith { number ->
+            val zone = when {
+                number <= 6 -> StudyCafeZone.STUDY_ROOM
+                number <= 28 -> StudyCafeZone.SOLO
+                else -> StudyCafeZone.COUNTER
+            }
+            val status = if (number in availableSeats) RoomStatus.AVAILABLE else RoomStatus.OCCUPIED
+            StudyCafeSeat(
+                number = number,
+                zone = zone,
+                status = status,
+                remainingSeconds = if (status == RoomStatus.OCCUPIED) randomStudyCafeRemainingSeconds(number) else 0L,
+            )
+        }
+
+        val layout = listOf(
+            listOf(1, 2, 3, null, 7, 8, 9, 10, null, 29, 30, 31, null, null, null, null, null, null),
+            listOf(4, 5, 6, null, 11, 12, 13, 14, null, 32, 33, 34, null, null, null, null, null, null),
+            listOf(null, null, null, null, 15, 16, 17, 18, null, 35, 36, 37, null, null, null, null, null, null),
+            listOf(null, null, null, null, 19, 20, 21, 22, null, 38, 39, 40, null, null, null, null, null, null),
+            listOf(null, null, null, null, 23, 24, 25, 26, null, null, null, null, null, null, null, null, null, null),
+            listOf(null, null, null, null, 27, 28, null, null, null, null, null, null, null, null, null, null, null, null),
+            listOf(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null),
+            listOf(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null),
+        )
+
+        return layout.flatten().map { number -> number?.let { seatByNumber.getValue(it) } }
+    }
+
+    private fun randomStudyCafeRemainingSeconds(seatNumber: Int): Long {
+        val mixed = (seatNumber * 1_741 + seatNumber * seatNumber * 97 + 2_039) % 10_620
+        return 180L + mixed
     }
 
     fun placeById(id: String): Place? = places.find { it.id == id }

@@ -64,7 +64,13 @@ class PlaceAdapter(
                 )
             }
 
-            when (place.occupancy) {
+            val displayOccupancy = when {
+                place.occupancyPercent >= 100 -> OccupancyLevel.FULL
+                place.occupancyPercent >= 80 -> OccupancyLevel.BUSY
+                else -> OccupancyLevel.AVAILABLE
+            }
+
+            when (displayOccupancy) {
                 OccupancyLevel.FULL -> {
                     binding.tvStatusBadge.text = context.getString(R.string.status_full)
                     binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_status_full)
@@ -73,11 +79,16 @@ class PlaceAdapter(
                         ColorStateList.valueOf(ContextCompat.getColor(context, R.color.occupancy_full))
                 }
                 OccupancyLevel.BUSY -> {
+                    val busyColorRes = if (place.occupancyPercent >= 90) {
+                        R.color.occupancy_busy
+                    } else {
+                        R.color.occupancy_warning
+                    }
                     binding.tvStatusBadge.text = context.getString(R.string.status_remaining, place.emptySeats)
                     binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_status_busy)
                     binding.tvStatusBadge.setTextColor(ContextCompat.getColor(context, R.color.status_busy_text))
                     binding.progressOccupancy.progressTintList =
-                        ColorStateList.valueOf(ContextCompat.getColor(context, R.color.occupancy_busy))
+                        ColorStateList.valueOf(ContextCompat.getColor(context, busyColorRes))
                 }
                 OccupancyLevel.AVAILABLE -> {
                     binding.tvStatusBadge.text = context.getString(R.string.status_remaining, place.emptySeats)

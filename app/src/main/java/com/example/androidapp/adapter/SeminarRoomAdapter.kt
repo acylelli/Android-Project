@@ -44,26 +44,19 @@ class SeminarRoomAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(room: SeminarRoom?) {
-            val context = binding.root.context
-            val density = context.resources.displayMetrics.density
+            val density = binding.root.context.resources.displayMetrics.density
             val suffix = if (isSeatMode) "번" else "호"
 
             binding.tvRoomNumber.text = room?.let { "${it.number}$suffix" } ?: ""
 
-            val marginDp = if (isSeatMode) 2 else 4
+            val marginDp = if (isSeatMode) 2 else 3
             val fontSize = if (isSeatMode) 11f else 12f
-            val cornerRadiusDp = if (isSeatMode) 8 else 12
+            val cornerRadiusDp = if (isSeatMode) 8 else 10
             val layoutParams = binding.tvRoomNumber.layoutParams as ViewGroup.MarginLayoutParams
             val marginPx = (marginDp * density).toInt()
 
-            if (isSeatMode) {
-                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                layoutParams.height = (38 * density).toInt()
-            } else {
-                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                layoutParams.height = (58 * density).toInt()
-            }
-
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            layoutParams.height = ((if (isSeatMode) 38 else 46) * density).toInt()
             layoutParams.setMargins(marginPx, marginPx, marginPx, marginPx)
             binding.tvRoomNumber.layoutParams = layoutParams
             binding.tvRoomNumber.textSize = fontSize
@@ -94,21 +87,25 @@ class SeminarRoomAdapter(
                         setStroke((1 * density).toInt(), colorTealMain)
                         binding.tvRoomNumber.setTextColor(android.graphics.Color.WHITE)
                     }
+
                     room.status == RoomStatus.AVAILABLE -> {
                         setColor(android.graphics.Color.WHITE)
                         setStroke((1 * density).toInt(), colorAvailableBorder)
                         binding.tvRoomNumber.setTextColor(colorTealMain)
                     }
+
                     room.status == RoomStatus.OCCUPIED -> {
                         setColor(colorInUseFill)
                         setStroke((1 * density).toInt(), colorInUseBorder)
                         binding.tvRoomNumber.setTextColor(colorInUseText)
                     }
+
                     room.status == RoomStatus.UNAVAILABLE -> {
                         setColor(colorMyReservation)
                         setStroke((1 * density).toInt(), colorMyReservation)
                         binding.tvRoomNumber.setTextColor(android.graphics.Color.WHITE)
                     }
+
                     else -> {
                         setColor(android.graphics.Color.WHITE)
                         setStroke((1 * density).toInt(), colorInUseBorder)
@@ -127,7 +124,17 @@ class SeminarRoomAdapter(
     }
 
     private fun buildSeminarRoomLayout(list: List<SeminarRoom>): List<SeminarRoom?> {
-        return list
+        val roomsByNumber = list.associateBy { it.number }
+        val rows = listOf(
+            listOf(101, null, 107),
+            listOf(102, null, 108),
+            listOf(103, null, 109),
+            listOf(104, null, 110),
+            listOf(105, null, 111),
+            listOf(106, null, 112),
+        )
+
+        return rows.flatten().map { number -> number?.let { roomsByNumber[it] } }
     }
 
     private fun buildStudyRoomSeatLayout(list: List<SeminarRoom>): List<SeminarRoom?> {
