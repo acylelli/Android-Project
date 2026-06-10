@@ -16,7 +16,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="16dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background="@android:color/transparent"
             android:contentDescription="뒤로가기"
             android:padding="10dp"
             android:scaleType="fitCenter"

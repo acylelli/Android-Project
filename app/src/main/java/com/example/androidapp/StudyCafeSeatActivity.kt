@@ -1,5 +1,6 @@
 package com.example.androidapp
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -44,13 +45,14 @@ class StudyCafeSeatActivity : AppCompatActivity() {
                 selectedSeat.status == RoomStatus.AVAILABLE && seatAdapter.hasReservedSeat() -> moveSeat(selectedSeat)
                 selectedSeat.status == RoomStatus.AVAILABLE -> showPaymentDialog(selectedSeat)
                 else -> {
-                NotificationStore.saveSeatAlert(this, selectedSeat.number)
-                showInAppNotification(
-                    title = "좌석 알림 신청",
-                    message = "${selectedSeat.number}번 좌석이 공석이 되면 알려드릴게요.",
-                )
+                    NotificationStore.saveSeatAlert(this, placeName, selectedSeat.number)
+                    showInAppNotification(
+                        title = "$placeName 좌석 알림 신청",
+                        message = "${selectedSeat.number}번 좌석이 공석이 되면 알려드릴게요.",
+                    )
+                    scheduleSeatAvailableAlert(selectedSeat.number)
+                }
             }
-        }
         }
     }
 
@@ -65,7 +67,13 @@ class StudyCafeSeatActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        val seats = MockData.studyCafeSeatLayout()
+        val seats = MockData.studyCafeSeatLayout().map { seat ->
+            if (seat != null && SeatAvailabilityNotifier.isAvailable(placeName, seat.number)) {
+                seat.copy(status = RoomStatus.AVAILABLE, remainingSeconds = 0L)
+            } else {
+                seat
+            }
+        }
         selectedSeatNumber = seats.filterNotNull()
             .firstOrNull { it.status == RoomStatus.AVAILABLE }
             ?.number ?: 1
@@ -225,6 +233,15 @@ class StudyCafeSeatActivity : AppCompatActivity() {
         Toast.makeText(this, "자리 이동이 완료되었습니다.", Toast.LENGTH_SHORT).show()
     }
 
+    private fun scheduleSeatAvailableAlert(seatNumber: Int) {
+        SeatAvailabilityNotifier.schedule(placeName, seatNumber) {
+            seatAdapter.markSeatAvailable(seatNumber)
+            seatAdapter.updateSelection(seatNumber)
+            selectedSeatNumber = seatNumber
+            seatAdapter.selectedSeat()?.let(::updateSelectedSeatInfo)
+        }
+    }
+
     private fun seatLabel(seat: StudyCafeSeat): String = "${seat.number}번 ${seat.zone.label} 좌석"
 
     private fun formatRemainingTime(totalSeconds: Long): String {
@@ -279,6 +296,10 @@ class StudyCafeSeatActivity : AppCompatActivity() {
         val notification = binding.layoutInAppNotification
         notification.animate().cancel()
         notificationAutoDismiss?.let(notification::removeCallbacks)
+        notification.setOnClickListener {
+            startActivity(Intent(this, NotificationActivity::class.java))
+            hideInAppNotification(toRight = true)
+        }
         binding.tvInAppNotificationTitle.text = title
         binding.tvInAppNotificationMessage.text = message
         notification.visibility = View.VISIBLE

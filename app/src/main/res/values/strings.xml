@@ -67,4 +67,5 @@
     <string name="distance_format">%1$s · %2$.1fkm</string>
     <string name="notify_icon_desc">알림 아이콘</string>
     <string name="no_notifications">알림이 없습니다.</string>
+    <string name="google_web_client_id">168525195967-aqvklngnphu2iii873ef5okqlu597etv.apps.googleusercontent.com</string>
 </resources>

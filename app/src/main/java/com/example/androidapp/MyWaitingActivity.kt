@@ -25,7 +25,7 @@ class MyWaitingActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener { finish() }
 
         binding.ivChatbot.setOnClickListener {
-            Toast.makeText(this, "AI 헬프봇: 대기 현황을 안내해 드립니다.", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, HelpBotActivity::class.java))
         }
 
         binding.btnFindOther.setOnClickListener {

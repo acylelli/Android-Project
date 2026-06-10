@@ -37,6 +37,17 @@ class SeminarRoomAdapter(
         notifyDataSetChanged()
     }
 
+    fun markAvailable(roomNumber: Int) {
+        rooms = rooms.map { room ->
+            if (room?.number == roomNumber) {
+                room.copy(status = RoomStatus.AVAILABLE)
+            } else {
+                room
+            }
+        }
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoomViewHolder {
         val binding = ItemSeminarRoomBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return RoomViewHolder(binding)

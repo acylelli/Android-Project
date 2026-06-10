@@ -1,6 +1,5 @@
 package com.example.androidapp
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -20,6 +19,9 @@ class LibrarySeatActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLibrarySeatsBinding
     private val seatMap = buildLibrarySeatMap()
     private var selectedSeat = 53
+    private var placeName = "도서관"
+    private var remainingSeats = REMAINING_SEATS
+    private var inUseSeats = IN_USE_SEATS
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,9 +30,9 @@ class LibrarySeatActivity : AppCompatActivity() {
 
         val placeId = intent.getStringExtra(AppConstants.EXTRA_PLACE_ID)
         val place = MockData.placeById(placeId.orEmpty())
-        val placeName = place?.name ?: "도서관"
-        val remainingSeats = place?.emptySeats ?: REMAINING_SEATS
-        val inUseSeats = place?.inUse ?: IN_USE_SEATS
+        placeName = place?.name ?: "도서관"
+        remainingSeats = place?.emptySeats ?: REMAINING_SEATS
+        inUseSeats = place?.inUse ?: IN_USE_SEATS
         val waitingCount = place?.waiting ?: WAITING_COUNT
 
         binding.tvTitle.text = "$placeName 좌석"
@@ -41,11 +43,16 @@ class LibrarySeatActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener { finish() }
         binding.btnNotifyLibrarySeat.setOnClickListener {
             NotificationStore.saveLibrarySeatAlert(this, placeName, selectedSeat)
-            startActivity(Intent(this, NotificationActivity::class.java))
+            InAppNotification.show(
+                activity = this,
+                title = "$placeName 좌석 알림 신청",
+                message = "${selectedSeat}번 좌석이 공석이 되면 알려드릴게요.",
+            )
+            scheduleSeatAvailableAlert(placeName, selectedSeat)
         }
 
         renderSeatMap()
-        updateSelectedInfo()
+        updateSelectedInfo(animateButton = false)
     }
 
     private fun renderSeatMap() {
@@ -56,7 +63,7 @@ class LibrarySeatActivity : AppCompatActivity() {
             for (col in 0 until MAP_COLS) {
                 val number = seatMap[row][col]
                 val view = if (number == null) {
-                    Space(this).apply { layoutParams = cellLayoutParams(row, col) }
+                    Space(this).apply { layoutParams = spacerLayoutParams(row, col) }
                 } else {
                     createSeatView(number, row, col)
                 }
@@ -74,27 +81,55 @@ class LibrarySeatActivity : AppCompatActivity() {
             typeface = Typeface.DEFAULT_BOLD
             setTextColor(textColorFor(number, status))
             background = backgroundFor(number, status)
-            layoutParams = cellLayoutParams(row, col)
+            layoutParams = seatLayoutParams(row, col)
             setOnClickListener {
                 selectedSeat = number
                 renderSeatMap()
-                updateSelectedInfo()
+                updateSelectedInfo(animateButton = true)
             }
         }
     }
 
-    private fun updateSelectedInfo() {
+    private fun updateSelectedInfo(animateButton: Boolean) {
         binding.tvSelectedInfo.text = "선택 좌석: ${selectedSeat}번"
         binding.tvSelectedDetail.text = "사용 중인 좌석도 선택할 수 있습니다. 자리가 나면 알림을 보내드려요."
         binding.tvNotifyLibrarySeat.text = "${selectedSeat}번 좌석 알림받기"
+
+        if (animateButton) {
+            showActionButtonPopup()
+        } else {
+            binding.btnNotifyLibrarySeat.alpha = 1f
+            binding.btnNotifyLibrarySeat.translationY = 0f
+        }
     }
 
-    private fun cellLayoutParams(row: Int, col: Int): GridLayout.LayoutParams {
+    private fun showActionButtonPopup() {
+        binding.btnNotifyLibrarySeat.animate().cancel()
+        binding.btnNotifyLibrarySeat.translationY = dp(72).toFloat()
+        binding.btnNotifyLibrarySeat.alpha = 0f
+        binding.btnNotifyLibrarySeat.animate()
+            .translationY(0f)
+            .alpha(1f)
+            .setDuration(180L)
+            .start()
+    }
+
+    private fun seatLayoutParams(row: Int, col: Int): GridLayout.LayoutParams {
         val density = resources.displayMetrics.density
         return GridLayout.LayoutParams(GridLayout.spec(row), GridLayout.spec(col)).apply {
-            width = (34 * density).toInt()
-            height = (34 * density).toInt()
-            setMargins((4 * density).toInt(), (4 * density).toInt(), (4 * density).toInt(), (4 * density).toInt())
+            width = (36 * density).toInt()
+            height = (36 * density).toInt()
+            val horizontalMargin = (3 * density).toInt()
+            val verticalMargin = if (row in GAP_ROWS) (2 * density).toInt() else (3 * density).toInt()
+            setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin)
+        }
+    }
+
+    private fun spacerLayoutParams(row: Int, col: Int): GridLayout.LayoutParams {
+        val density = resources.displayMetrics.density
+        return GridLayout.LayoutParams(GridLayout.spec(row), GridLayout.spec(col)).apply {
+            width = (8 * density).toInt()
+            height = if (row in GAP_ROWS) (8 * density).toInt() else (1 * density).toInt()
         }
     }
 
@@ -129,16 +164,40 @@ class LibrarySeatActivity : AppCompatActivity() {
     }
 
     private fun statusFor(number: Int): RoomStatus {
-        return if (number in AVAILABLE_SEATS) RoomStatus.AVAILABLE else RoomStatus.OCCUPIED
+        return if (number in AVAILABLE_SEATS || SeatAvailabilityNotifier.isAvailable(placeName, number)) {
+            RoomStatus.AVAILABLE
+        } else {
+            RoomStatus.OCCUPIED
+        }
+    }
+
+    private fun scheduleSeatAvailableAlert(placeName: String, seatNumber: Int) {
+        val wasOccupied = statusFor(seatNumber) == RoomStatus.OCCUPIED
+        SeatAvailabilityNotifier.schedule(placeName, seatNumber) {
+            if (wasOccupied) {
+                remainingSeats += 1
+                inUseSeats = (inUseSeats - 1).coerceAtLeast(0)
+                binding.tvTotalSeats.text = remainingSeats.toString()
+                binding.tvInUseSeats.text = inUseSeats.toString()
+            }
+            renderSeatMap()
+            updateSelectedInfo(animateButton = true)
+        }
+    }
+
+    private fun dp(value: Int): Int {
+        return (value * resources.displayMetrics.density).toInt()
     }
 
     companion object {
-        private const val MAP_ROWS = 18
-        private const val MAP_COLS = 29
-        private const val TOTAL_SEATS = 174
+        private const val MAP_ROWS = 23
+        private const val MAP_COLS = 18
+        private const val TOTAL_SEATS = 279
         private const val REMAINING_SEATS = 71
         private const val IN_USE_SEATS = 123
         private const val WAITING_COUNT = 0
+
+        private val GAP_ROWS = setOf(1, 13)
 
         private val AVAILABLE_SEATS = (1..TOTAL_SEATS)
             .filter { seat -> seat % 3 == 2 || seat % 7 == 0 || seat in setOf(53, 64, 65, 66, 67) }
@@ -154,36 +213,41 @@ class LibrarySeatActivity : AppCompatActivity() {
                 }
             }
 
-            fun putRow(row: Int, startCol: Int, numbers: IntProgression) {
-                numbers.forEachIndexed { index, number -> put(row, startCol + index, number) }
+            fun putSeats(row: Int, vararg seats: Pair<Int, Int>) {
+                seats.forEach { (col, number) -> put(row, col, number) }
             }
 
-            val leftTopStarts = listOf(1, 31, 61, 91, 121)
-            val leftBottomStarts = listOf(30, 60, 90, 120, 150)
-            val rightTopStarts = listOf(7, 37, 67, 97, 127)
-            val rightBottomStarts = listOf(24, 54, 84, 114, 144)
+            putSeats(0, 3 to 5, 4 to 4, 5 to 3, 7 to 2, 8 to 1)
 
-            for (block in 0..4) {
-                val row = block * 3
-                putRow(row, 0, leftTopStarts[block]..leftTopStarts[block] + 5)
-                putRow(row + 1, 0, leftBottomStarts[block] downTo leftBottomStarts[block] - 5)
-                putRow(row, 8, rightTopStarts[block]..rightTopStarts[block] + 8)
-                putRow(row + 1, 8, rightBottomStarts[block] downTo rightBottomStarts[block] - 8)
-            }
+            putSeats(2, 0 to 6, 3 to 13, 4 to 23, 6 to 33, 7 to 43, 10 to 53)
+            putSeats(3, 0 to 7, 3 to 14, 4 to 24, 6 to 34, 7 to 44, 10 to 54)
+            putSeats(4, 3 to 15, 4 to 25, 6 to 35, 7 to 45, 10 to 55, 11 to 64)
 
-            val bottomBlocks = listOf(
-                172 to 14,
-                166 to 18,
-                160 to 22,
-                154 to 26,
+            putSeats(5, 0 to 8, 3 to 16, 4 to 26, 6 to 36, 7 to 46, 10 to 56, 11 to 65, 13 to 71, 14 to 79)
+            putSeats(6, 0 to 9, 13 to 72, 14 to 80)
+            putSeats(7, 0 to 10, 3 to 17, 4 to 27, 6 to 37, 7 to 47, 10 to 57, 11 to 66, 13 to 73, 14 to 81)
+            putSeats(8, 3 to 18, 4 to 28, 6 to 38, 7 to 48, 10 to 58, 11 to 67, 13 to 74, 14 to 82)
+            putSeats(9, 3 to 19, 4 to 29, 6 to 39, 7 to 49, 10 to 59, 11 to 68, 13 to 75, 14 to 83)
+            putSeats(10, 3 to 20, 4 to 30, 6 to 40, 7 to 50, 13 to 76, 14 to 84)
+            putSeats(11, 0 to 11, 3 to 21, 4 to 31, 6 to 41, 7 to 51, 10 to 60, 11 to 69, 13 to 77, 14 to 85)
+            putSeats(12, 0 to 12, 3 to 22, 4 to 32, 6 to 42, 7 to 52, 10 to 61, 11 to 70, 13 to 78, 14 to 86)
+
+            val bottomRows = listOf(
+                228 to listOf(235, 241, 247, 253, 259, 265, 271, 277),
+                229 to listOf(236, 242, 248, 254, 260, 266, 272, 278),
+                230 to listOf(237, 243, 249, 255, 261, 267, 273, 279),
+                231 to listOf(238, 244, 250, 256, 262, 268),
+                232 to listOf(239, 245, 251, 257, 263, 269),
+                233 to listOf(240, 246, 252, 258, 264, 270),
+                234 to emptyList(),
             )
-            bottomBlocks.forEach { (start, col) ->
-                put(15, col, start)
-                put(15, col + 1, start - 1)
-                put(16, col, start + 1)
-                put(16, col + 1, start - 2)
-                put(17, col, start + 2)
-                put(17, col + 1, start - 3)
+            bottomRows.forEachIndexed { index, (leftSeat, seats) ->
+                val row = 15 + index
+                put(row, 0, leftSeat)
+                seats.forEachIndexed { seatIndex, number ->
+                    val col = 3 + seatIndex + (seatIndex / 2)
+                    put(row, col, number)
+                }
             }
 
             return map

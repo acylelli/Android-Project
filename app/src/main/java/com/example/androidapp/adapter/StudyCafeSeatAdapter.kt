@@ -64,6 +64,17 @@ class StudyCafeSeatAdapter(
         notifyDataSetChanged()
     }
 
+    fun markSeatAvailable(seatNumber: Int) {
+        seats = seats.map { seat ->
+            if (seat?.number == seatNumber) {
+                seat.copy(status = RoomStatus.AVAILABLE, remainingSeconds = 0L)
+            } else {
+                seat
+            }
+        }
+        notifyDataSetChanged()
+    }
+
     fun extendReservedTime(extraSeconds: Long) {
         reservedRemainingSeconds += extraSeconds
         notifyDataSetChanged()

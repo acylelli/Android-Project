@@ -3,6 +3,8 @@ package com.example.androidapp
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -25,28 +27,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        try {
-            val info = packageManager.getPackageInfo(packageName, android.content.pm.PackageManager.GET_SIGNATURES)
-            info.signatures?.forEach { signature ->
-                val md = java.security.MessageDigest.getInstance("SHA")
-                md.update(signature.toByteArray())
-                val keyHash = android.util.Base64.encodeToString(md.digest(), android.util.Base64.NO_WRAP)
-                android.util.Log.d("KeyHash", "내 키 해시: $keyHash")
-            }
-        } catch (e: Exception) {
-            android.util.Log.e("KeyHash", "키 해시 구하기 실패", e)
-        }
+
         setupRecyclerView()
         setupCategoryChips()
         setupBottomNav()
         setupChatbot()
-
+        setupSearch()
         filterPlaces()
     }
 
     private fun setupChatbot() {
         binding.ivChatbot.setOnClickListener {
-            android.widget.Toast.makeText(this, "AI 헬프봇: 무엇을 도와드릴까요?", android.widget.Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, HelpBotActivity::class.java))
         }
     }
 
@@ -93,22 +85,40 @@ class MainActivity : AppCompatActivity() {
 
         categoryChips.forEachIndexed { index, chip ->
             val selected = index == selectedCategoryIndex
-            if (selected) {
-                chip.setChipBackgroundColor(ColorStateList.valueOf(green))
-                chip.setTextColor(white)
-            } else {
-                chip.setChipBackgroundColor(ColorStateList.valueOf(white))
-                chip.setTextColor(green)
-            }
+            chip.setChipBackgroundColor(ColorStateList.valueOf(if (selected) green else white))
+            chip.setTextColor(if (selected) white else green)
         }
     }
 
+    private fun setupSearch() {
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterPlaces()
+            }
+
+            override fun afterTextChanged(s: Editable?) = Unit
+        })
+    }
+
     private fun filterPlaces() {
+        val query = binding.etSearch.text.toString().trim()
         var list = if (selectedCategoryIndex == 0) {
             MockData.places
         } else {
             val category = MockData.filterChips[selectedCategoryIndex]
             MockData.places.filter { it.category == category }
+        }
+
+        if (query.isNotBlank()) {
+            list = list.filter { place ->
+                place.name.contains(query, ignoreCase = true) ||
+                    place.category.label.contains(query, ignoreCase = true) ||
+                    place.address.contains(query, ignoreCase = true) ||
+                    place.tags.any { it.contains(query, ignoreCase = true) } ||
+                    place.amenities.any { it.contains(query, ignoreCase = true) }
+            }
         }
 
         if (isShowingFavorites) {
@@ -143,14 +153,13 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, MyPageActivity::class.java))
         }
 
-        // 초기 상태 설정
         updateBottomNavStyles()
     }
 
     private fun updateBottomNavStyles() {
         val activeColor = ContextCompat.getColor(this, R.color.jari_green)
         val inactiveColor = ContextCompat.getColor(this, R.color.nav_inactive)
-        
+
         val homeIcon = binding.navHome.getChildAt(0) as ImageView
         val homeText = binding.navHome.getChildAt(1) as TextView
         val favIcon = binding.navFavorites.getChildAt(0) as ImageView
@@ -160,7 +169,6 @@ class MainActivity : AppCompatActivity() {
         val myIcon = binding.navMy.getChildAt(0) as ImageView
         val myText = binding.navMy.getChildAt(1) as TextView
 
-        // 알림과 마이는 현재 페이지가 아니므로 항상 비활성 색상 (또는 필요시 확장)
         alertIcon.imageTintList = ColorStateList.valueOf(inactiveColor)
         alertText.setTextColor(inactiveColor)
         myIcon.imageTintList = ColorStateList.valueOf(inactiveColor)

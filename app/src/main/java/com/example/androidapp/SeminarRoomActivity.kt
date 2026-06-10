@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.androidapp.adapter.SeminarRoomAdapter
 import com.example.androidapp.data.MockData
 import com.example.androidapp.data.NotificationStore
+import com.example.androidapp.data.RoomStatus
 import com.example.androidapp.databinding.ActivitySeminarRoomBinding
 import com.example.androidapp.databinding.DialogSeminarReservationBinding
 
@@ -79,7 +80,17 @@ class SeminarRoomActivity : AppCompatActivity() {
         binding.rvRooms.adapter = roomAdapter
         
         // [수정] 모드에 따라 데이터 분리: 세미나실(101~112호) vs 열람실 좌석(1~50번)
-        val data = if (isSeatMode) MockData.studyRoomSeats() else MockData.seminarRooms()
+        val data = if (isSeatMode) {
+            MockData.studyRoomSeats().map { seat ->
+                if (SeatAvailabilityNotifier.isAvailable("창의열람실", seat.number)) {
+                    seat.copy(status = RoomStatus.AVAILABLE)
+                } else {
+                    seat
+                }
+            }
+        } else {
+            MockData.seminarRooms()
+        }
         val initialSelected = if (isSeatMode) 1 else 102
         selectedRoom = initialSelected
         
@@ -96,8 +107,14 @@ class SeminarRoomActivity : AppCompatActivity() {
 
         binding.btnRegisterWaiting.setOnClickListener {
             if (isSeatMode) {
-                NotificationStore.saveSeatAlert(this, selectedRoom)
-                startActivity(Intent(this, NotificationActivity::class.java))
+                val placeName = "창의열람실"
+                NotificationStore.saveSeatAlert(this, placeName, selectedRoom)
+                InAppNotification.show(
+                    activity = this,
+                    title = "$placeName 좌석 알림 신청",
+                    message = "${selectedRoom}번 좌석이 공석이 되면 알려드릴게요.",
+                )
+                scheduleSeatAvailableAlert(placeName, selectedRoom)
                 return@setOnClickListener
             }
             if (reservedRoom != null) {
@@ -105,6 +122,15 @@ class SeminarRoomActivity : AppCompatActivity() {
             } else {
                 showSeminarReservationDialog()
             }
+        }
+    }
+
+    private fun scheduleSeatAvailableAlert(placeName: String, seatNumber: Int) {
+        SeatAvailabilityNotifier.schedule(placeName, seatNumber) {
+            roomAdapter.markAvailable(seatNumber)
+            selectedRoom = seatNumber
+            roomAdapter.updateSelection(seatNumber)
+            updateSummary()
         }
     }
 
@@ -246,6 +272,11 @@ class SeminarRoomActivity : AppCompatActivity() {
                 placeName = "한성대 공대 A동 세미나실",
                 room = "${selectedRoom}호 세미나실",
                 startTime = "$selectedTime ~ $endTime",
+            )
+            InAppNotification.show(
+                activity = this,
+                title = "세미나실 예약 신청 완료",
+                message = "${selectedRoom}번 세미나실 예약이 완료되었습니다.",
             )
             updateReservationButton()
             updateSummary()

@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "168525195967",
+    "project_id": "jaritime-bbee5",
+    "storage_bucket": "jaritime-bbee5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:168525195967:android:9a68d71653aafef34b340a",
+        "android_client_info": {
+          "package_name": "com.example.androidapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "168525195967-j8hcljeugio03rk0umlfes2vd75sl3vb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.androidapp",
+            "certificate_hash": "b58fa96f60f1a901c205e0e2df3f355fe6961f63"
+          }
+        },
+        {
+          "client_id": "168525195967-aqvklngnphu2iii873ef5okqlu597etv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA01ITeXIRKIJLNwyU6hQPaXv6aDq912uI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "168525195967-aqvklngnphu2iii873ef5okqlu597etv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:168525195967:android:1e738182965ad5b64b340a",
+        "android_client_info": {
+          "package_name": "com.myApp.JariTime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "168525195967-aqvklngnphu2iii873ef5okqlu597etv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA01ITeXIRKIJLNwyU6hQPaXv6aDq912uI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "168525195967-aqvklngnphu2iii873ef5okqlu597etv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

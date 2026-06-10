@@ -7,7 +7,7 @@ enum class PlaceCategory(val label: String) {
     READING_ROOM("독서실"),
     CAFE("카페"),
     LIBRARY("도서관"),
-    SCHOOL_STUDY("학교 열람실"),
+    SCHOOL_STUDY("학교 스터디"),
     STUDY_CAFE("스터디카페"),
 }
 

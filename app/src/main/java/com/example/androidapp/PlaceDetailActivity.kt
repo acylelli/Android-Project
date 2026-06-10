@@ -14,6 +14,10 @@ import com.example.androidapp.data.OccupancyLevel
 import com.example.androidapp.data.PlaceCategory
 import com.example.androidapp.databinding.ActivityPlaceDetailBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.NaverMap
+import com.naver.maps.map.overlay.Marker
 
 class PlaceDetailActivity : AppCompatActivity() {
 
@@ -24,10 +28,12 @@ class PlaceDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPlaceDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.mapView.onCreate(savedInstanceState)
 
         val placeId = intent.getStringExtra(AppConstants.EXTRA_PLACE_ID) ?: return finish()
         val place = MockData.placeById(placeId) ?: return finish()
         val isSeminar = intent.getBooleanExtra(AppConstants.EXTRA_IS_SEMINAR, place.isSeminar)
+        setupPlaceMap(placeId, place.name)
 
         // 바텀시트 동작(Behavior) 초기화
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
@@ -58,7 +64,7 @@ class PlaceDetailActivity : AppCompatActivity() {
         }
 
         binding.ivChatbot.setOnClickListener {
-            android.widget.Toast.makeText(this, "AI 헬프봇: 무엇을 도와드릴까요?", android.widget.Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, HelpBotActivity::class.java))
         }
 
         // 지도 (현재 주석 처리됨)
@@ -177,6 +183,70 @@ class PlaceDetailActivity : AppCompatActivity() {
             }
             binding.btnFindOther.setOnClickListener { finish() }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.mapView.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.mapView.onResume()
+    }
+
+    override fun onPause() {
+        binding.mapView.onPause()
+        super.onPause()
+    }
+
+    override fun onStop() {
+        binding.mapView.onStop()
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        binding.mapView.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        binding.mapView.onSaveInstanceState(outState)
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        binding.mapView.onLowMemory()
+    }
+
+    private fun setupPlaceMap(placeId: String, placeName: String) {
+        val location = PlaceMapLocations.byPlaceId(placeId)
+        binding.mapView.getMapAsync { map ->
+            map.uiSettings.isLocationButtonEnabled = false
+            map.uiSettings.isZoomControlEnabled = false
+            map.uiSettings.isCompassEnabled = false
+            map.uiSettings.isScaleBarEnabled = false
+
+            Marker().apply {
+                position = location
+                captionText = placeName
+                captionTextSize = 13f
+                iconTintColor = ContextCompat.getColor(this@PlaceDetailActivity, R.color.jari_green)
+                this.map = map
+            }
+
+            binding.root.post {
+                focusMapOnPlace(map, location)
+            }
+        }
+    }
+
+    private fun focusMapOnPlace(map: NaverMap, location: LatLng) {
+        val topPadding = dpToPx(88)
+        val bottomPadding = binding.bottomSheet.height.coerceAtLeast(dpToPx(220))
+        map.setContentPadding(0, topPadding, 0, bottomPadding)
+        map.moveCamera(CameraUpdate.scrollAndZoomTo(location, 17.0))
     }
 
     private fun openSeatSelection(placeId: String) {

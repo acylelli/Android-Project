@@ -1,29 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
+    <com.naver.maps.map.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#EAF3EF" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:paddingTop="32dp">
+        android:background="#F8FFFFFF"
+        android:elevation="8dp"
+        android:paddingTop="32dp"
+        android:paddingBottom="8dp">
 
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/place_detail_title"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:src="@drawable/back"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/jari_green" />
@@ -48,7 +55,7 @@
             android:layout_marginEnd="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:contentDescription="AI 챗봇"
+            android:contentDescription="자리타임봇"
             android:focusable="true"
             android:padding="8dp"
             android:src="@drawable/ic_chatbot"
@@ -64,390 +71,399 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_bottom_sheet"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-
         app:behavior_fitToContents="true"
-        app:behavior_skipCollapsed="false"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="220dp"> <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="32dp">
+        app:behavior_peekHeight="220dp"
+        app:behavior_skipCollapsed="false"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-        <View
-            android:id="@+id/dragHandle"
-            android:layout_width="40dp"
-            android:layout_height="4dp"
-            android:background="@color/divider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/ivFavorite"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="-6dp"
-            android:layout_marginTop="10dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:contentDescription="@string/nav_favorites"
-            android:focusable="true"
-            android:padding="6dp"
-            android:src="@drawable/ic_heart_outline"
-            app:layout_constraintBottom_toBottomOf="@id/tvPlaceName"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvPlaceName" />
-
-        <TextView
-            android:id="@+id/tvPlaceName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="8dp"
-            android:textColor="@color/text_primary"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/tvOpenBadge"
-            app:layout_constraintStart_toEndOf="@id/ivFavorite"
-            app:layout_constraintTop_toBottomOf="@id/dragHandle" />
-
-        <TextView
-            android:id="@+id/tvOpenBadge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_chip_default"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="4dp"
-            android:text="@string/open_status"
-            android:textColor="@color/jari_green"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/tvPlaceName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dragHandle" />
-
-        <TextView
-            android:id="@+id/tvPlaceCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="@id/tvPlaceName"
-            app:layout_constraintTop_toBottomOf="@id/tvPlaceName" />
-
-        <ImageView
-            android:id="@+id/ivLocationPin"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:src="@drawable/ic_location_pin"
-            app:layout_constraintBottom_toBottomOf="@id/tvPlaceAddress"
-            app:layout_constraintEnd_toEndOf="@id/ivFavorite"
-            app:layout_constraintStart_toStartOf="@id/ivFavorite"
-            app:layout_constraintTop_toTopOf="@id/tvPlaceAddress" />
-
-        <TextView
-            android:id="@+id/tvPlaceAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="@id/tvPlaceName"
-            app:layout_constraintTop_toBottomOf="@id/tvPlaceCategory" />
-
-        <TextView
-            android:id="@+id/tvOpenStatus"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/jari_green"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tvRating"
-            app:layout_constraintTop_toBottomOf="@id/tvPlaceAddress" />
-
-        <TextView
-            android:id="@+id/tvStars"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:textColor="#FFB800"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@id/tvRating"
-            app:layout_constraintTop_toBottomOf="@id/tvPlaceAddress" />
-
-        <TextView
-            android:id="@+id/tvRating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvPlaceAddress" />
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/tvPhotoPlaceholder"
-            android:layout_width="0dp"
-            android:layout_height="160dp"
-            android:layout_marginTop="28dp"
-            android:contentDescription="@string/photo_placeholder"
-            android:scaleType="centerCrop"
-            android:src="@drawable/hansungstudy"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvOpenStatus"
-            app:shapeAppearanceOverlay="@style/RoundedImageView" />
-
-        <TextView
-            android:id="@+id/tvRealTimeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="실시간 현황"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvPhotoPlaceholder" />
-
-        <TextView
-            android:id="@+id/tvUpdateTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="방금 업데이트"
-            android:textColor="@color/text_secondary"
-            android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="@id/tvRealTimeLabel"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvRealTimeLabel" />
-
-        <TextView
-            android:id="@+id/tvEmptyCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/tvInUseCount"
-            app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvRealTimeLabel"
-            tools:text="4" />
-
-        <TextView
-            android:id="@+id/tvEmptyLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="잔여석"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="@id/tvEmptyCount"
-            app:layout_constraintStart_toStartOf="@id/tvEmptyCount"
-            app:layout_constraintTop_toBottomOf="@id/tvEmptyCount" />
-
-        <TextView
-            android:id="@+id/tvInUseCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/tvWaitingCount"
-            app:layout_constraintStart_toEndOf="@id/tvEmptyCount"
-            app:layout_constraintTop_toTopOf="@id/tvEmptyCount"
-            tools:text="6" />
-
-        <TextView
-            android:id="@+id/tvInUseLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/in_use"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="@id/tvInUseCount"
-            app:layout_constraintStart_toStartOf="@id/tvInUseCount"
-            app:layout_constraintTop_toBottomOf="@id/tvInUseCount" />
-
-        <TextView
-            android:id="@+id/tvWaitingCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tvInUseCount"
-            app:layout_constraintTop_toTopOf="@id/tvEmptyCount"
-            tools:text="2"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/tvWaitingLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="대기자"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@id/tvWaitingCount"
-            app:layout_constraintStart_toStartOf="@id/tvWaitingCount"
-            app:layout_constraintTop_toBottomOf="@id/tvWaitingCount"
-            tools:visibility="visible" />
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/divider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvEmptyLabel" />
-
-        <TextView
-            android:id="@+id/tvHoursLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:text="@string/hours_label"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider" />
-
-        <TextView
-            android:id="@+id/tvHours"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_primary"
-            android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvHoursLabel" />
-
-        <TextView
-            android:id="@+id/tvFeeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/fee_label"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvHoursLabel" />
-
-        <TextView
-            android:id="@+id/tvFee"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_primary"
-            android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvFeeLabel" />
-
-        <TextView
-            android:id="@+id/tvAmenitiesLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/amenities_label"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvFeeLabel" />
-
-        <TextView
-            android:id="@+id/tvAmenities"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_primary"
-            android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvAmenitiesLabel" />
-
-        <LinearLayout
-            android:id="@+id/layoutSeminarButtons"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvAmenitiesLabel">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnSelectSeminar"
-                android:layout_width="0dp"
-                android:layout_height="52dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_outline_green"
-                android:text="@string/select_seminar"
-                android:textColor="@color/jari_green"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnFindOtherSeminar"
-                android:layout_width="0dp"
-                android:layout_height="52dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_outline_gray"
-                app:backgroundTint="@null"
-                android:text="@string/find_other_place"
-                android:textColor="#6B7280"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layoutGeneralButtons"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/tvAmenitiesLabel">
+            android:paddingHorizontal="20dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="32dp">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnNotify"
+            <View
+                android:id="@+id/dragHandle"
+                android:layout_width="40dp"
+                android:layout_height="4dp"
+                android:background="@color/divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivFavorite"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="-6dp"
+                android:layout_marginTop="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/nav_favorites"
+                android:focusable="true"
+                android:padding="6dp"
+                android:src="@drawable/ic_heart_outline"
+                app:layout_constraintBottom_toBottomOf="@id/tvPlaceName"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvPlaceName" />
+
+            <TextView
+                android:id="@+id/tvPlaceName"
                 android:layout_width="0dp"
-                android:layout_height="52dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_cancel_button"
-                android:backgroundTint="#FF4B4B"
-                android:drawableStart="@drawable/ic_nav_alert"
-                android:drawablePadding="6dp"
-                android:paddingHorizontal="16dp"
-                android:text="@string/notify_when_free"
-                android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:drawableTint="@color/white" />
+                app:layout_constraintEnd_toStartOf="@id/tvOpenBadge"
+                app:layout_constraintStart_toEndOf="@id/ivFavorite"
+                app:layout_constraintTop_toBottomOf="@id/dragHandle"
+                tools:text="성북정보도서관" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnFindOther"
+            <TextView
+                android:id="@+id/tvOpenBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_chip_default"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:text="@string/open_status"
+                android:textColor="@color/jari_green"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/tvPlaceName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dragHandle" />
+
+            <TextView
+                android:id="@+id/tvPlaceCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@id/tvPlaceName"
+                app:layout_constraintTop_toBottomOf="@id/tvPlaceName"
+                tools:text="도서관" />
+
+            <ImageView
+                android:id="@+id/ivLocationPin"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_location_pin"
+                app:layout_constraintBottom_toBottomOf="@id/tvPlaceAddress"
+                app:layout_constraintEnd_toEndOf="@id/ivFavorite"
+                app:layout_constraintStart_toStartOf="@id/ivFavorite"
+                app:layout_constraintTop_toTopOf="@id/tvPlaceAddress" />
+
+            <TextView
+                android:id="@+id/tvPlaceAddress"
                 android:layout_width="0dp"
-                android:layout_height="52dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_outline_gray"
-                app:backgroundTint="@null"
-                android:text="@string/find_other_place"
-                android:textColor="#6B7280"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tvPlaceName"
+                app:layout_constraintTop_toBottomOf="@id/tvPlaceCategory"
+                tools:text="서울 성북구 삼선교로 16길 116" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tvOpenStatus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/jari_green"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@id/tvRating"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvPlaceAddress"
+                tools:text="영업중 09:00 - 22:00" />
+
+            <TextView
+                android:id="@+id/tvStars"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:textColor="#FFB800"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toStartOf="@id/tvRating"
+                app:layout_constraintTop_toBottomOf="@id/tvPlaceAddress"
+                tools:text="★★★★★" />
+
+            <TextView
+                android:id="@+id/tvRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvPlaceAddress"
+                tools:text="4.7 (리뷰 128개)" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/tvPhotoPlaceholder"
+                android:layout_width="0dp"
+                android:layout_height="160dp"
+                android:layout_marginTop="28dp"
+                android:contentDescription="@string/photo_placeholder"
+                android:scaleType="centerCrop"
+                android:src="@drawable/hansungstudy"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvOpenStatus"
+                app:shapeAppearanceOverlay="@style/RoundedImageView" />
+
+            <TextView
+                android:id="@+id/tvRealTimeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="실시간 현황"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvPhotoPlaceholder" />
+
+            <TextView
+                android:id="@+id/tvUpdateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="방금 업데이트"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvRealTimeLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvRealTimeLabel" />
+
+            <TextView
+                android:id="@+id/tvEmptyCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@id/tvInUseCount"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvRealTimeLabel"
+                tools:text="4" />
+
+            <TextView
+                android:id="@+id/tvEmptyLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="여유석"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="@id/tvEmptyCount"
+                app:layout_constraintStart_toStartOf="@id/tvEmptyCount"
+                app:layout_constraintTop_toBottomOf="@id/tvEmptyCount" />
+
+            <TextView
+                android:id="@+id/tvInUseCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@id/tvWaitingCount"
+                app:layout_constraintStart_toEndOf="@id/tvEmptyCount"
+                app:layout_constraintTop_toTopOf="@id/tvEmptyCount"
+                tools:text="6" />
+
+            <TextView
+                android:id="@+id/tvInUseLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/in_use"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="@id/tvInUseCount"
+                app:layout_constraintStart_toStartOf="@id/tvInUseCount"
+                app:layout_constraintTop_toBottomOf="@id/tvInUseCount" />
+
+            <TextView
+                android:id="@+id/tvWaitingCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvInUseCount"
+                app:layout_constraintTop_toTopOf="@id/tvEmptyCount"
+                tools:text="2"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tvWaitingLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="대기자"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@id/tvWaitingCount"
+                app:layout_constraintStart_toStartOf="@id/tvWaitingCount"
+                app:layout_constraintTop_toBottomOf="@id/tvWaitingCount"
+                tools:visibility="visible" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvEmptyLabel" />
+
+            <TextView
+                android:id="@+id/tvHoursLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/hours_label"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider" />
+
+            <TextView
+                android:id="@+id/tvHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvHoursLabel" />
+
+            <TextView
+                android:id="@+id/tvFeeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/fee_label"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvHoursLabel" />
+
+            <TextView
+                android:id="@+id/tvFee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvFeeLabel" />
+
+            <TextView
+                android:id="@+id/tvAmenitiesLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/amenities_label"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvFeeLabel" />
+
+            <TextView
+                android:id="@+id/tvAmenities"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvAmenitiesLabel"
+                app:layout_constraintTop_toTopOf="@id/tvAmenitiesLabel" />
+
+            <LinearLayout
+                android:id="@+id/layoutSeminarButtons"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvAmenitiesLabel">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnSelectSeminar"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_outline_green"
+                    android:text="@string/select_seminar"
+                    android:textColor="@color/jari_green"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnFindOtherSeminar"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_outline_gray"
+                    android:text="@string/find_other_place"
+                    android:textColor="#6B7280"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutGeneralButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/tvAmenitiesLabel">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnNotify"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_cancel_button"
+                    android:backgroundTint="#FF4B4B"
+                    android:drawableStart="@drawable/ic_nav_alert"
+                    android:drawablePadding="6dp"
+                    android:drawableTint="@color/white"
+                    android:paddingHorizontal="16dp"
+                    android:text="@string/notify_when_free"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnFindOther"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_outline_gray"
+                    android:text="@string/find_other_place"
+                    android:textColor="#6B7280"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
